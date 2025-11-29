@@ -1,77 +1,51 @@
-import { Clock, Flame, Dumbbell } from "lucide-react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Workouts = () => {
-  const workouts = [
+  const [selectedType, setSelectedType] = useState<string>("all");
+  const [selectedEquipment, setSelectedEquipment] = useState<string>("all");
+  const [selectedMuscle, setSelectedMuscle] = useState<string>("all");
+
+  const exercises = [
     {
       id: 1,
-      title: "Full Body HIIT",
-      duration: "30 min",
-      calories: 350,
-      level: "Intermediate",
-      description: "High-intensity interval training targeting all major muscle groups.",
-      exercises: ["Burpees", "Mountain Climbers", "Jump Squats", "Push-ups", "Plank"],
+      name: "Push Up",
+      type: "Strength",
+      equipment: "Body Weight",
+      muscle: "Chest, Triceps, Shoulders",
+      media: "/videos/push-up.mp4",
+      mediaType: "video",
+      howTo: "Start in a high plank position with hands slightly wider than shoulder-width. Lower your body until your chest nearly touches the floor, keeping your elbows at a 45-degree angle. Push back up to the starting position. Keep your core engaged and body in a straight line throughout the movement.",
     },
     {
       id: 2,
-      title: "Upper Body Strength",
-      duration: "45 min",
-      calories: 280,
-      level: "Advanced",
-      description: "Build upper body strength with targeted resistance exercises.",
-      exercises: ["Bench Press", "Pull-ups", "Shoulder Press", "Bicep Curls", "Tricep Dips"],
+      name: "Diamond Push Up",
+      type: "Strength",
+      equipment: "Body Weight",
+      muscle: "Triceps, Chest, Shoulders",
+      media: "/videos/diamond-push-up.mp4",
+      mediaType: "video",
+      howTo: "Start in a high plank position with your hands close together, forming a diamond shape with your index fingers and thumbs. Lower your body while keeping your elbows close to your sides. Push back up to the starting position. This variation puts more emphasis on the triceps.",
     },
     {
       id: 3,
-      title: "Cardio Blast",
-      duration: "25 min",
-      calories: 320,
-      level: "Beginner",
-      description: "Get your heart pumping with this energetic cardio session.",
-      exercises: ["Jumping Jacks", "High Knees", "Running in Place", "Jump Rope", "Butt Kicks"],
-    },
-    {
-      id: 4,
-      title: "Core Strength",
-      duration: "20 min",
-      calories: 180,
-      level: "Intermediate",
-      description: "Strengthen your core with these effective abdominal exercises.",
-      exercises: ["Crunches", "Russian Twists", "Leg Raises", "Bicycle Crunches", "Plank Hold"],
-    },
-    {
-      id: 5,
-      title: "Lower Body Power",
-      duration: "40 min",
-      calories: 400,
-      level: "Advanced",
-      description: "Build leg strength and power with this challenging routine.",
-      exercises: ["Squats", "Lunges", "Deadlifts", "Leg Press", "Calf Raises"],
-    },
-    {
-      id: 6,
-      title: "Flexibility & Stretch",
-      duration: "30 min",
-      calories: 120,
-      level: "Beginner",
-      description: "Improve flexibility and reduce muscle tension with gentle stretching.",
-      exercises: ["Hamstring Stretch", "Quad Stretch", "Shoulder Rolls", "Neck Stretches", "Hip Openers"],
+      name: "Plank",
+      type: "Strength",
+      equipment: "Body Weight",
+      muscle: "Core, Abs, Back",
+      media: "/images/plank.jpeg",
+      mediaType: "image",
+      howTo: "Start in a forearm plank position with your elbows directly under your shoulders and forearms parallel to each other. Keep your body in a straight line from head to heels, engaging your core muscles. Hold this position without letting your hips sag or pike up. Focus on breathing steadily while maintaining proper form.",
     },
   ];
 
-  const getLevelColor = (level: string) => {
-    switch (level) {
-      case "Beginner":
-        return "bg-primary/10 text-primary hover:bg-primary/20";
-      case "Intermediate":
-        return "bg-secondary/10 text-secondary hover:bg-secondary/20";
-      case "Advanced":
-        return "bg-destructive/10 text-destructive hover:bg-destructive/20";
-      default:
-        return "bg-muted text-muted-foreground";
-    }
-  };
+  const filteredExercises = exercises.filter((exercise) => {
+    const typeMatch = selectedType === "all" || exercise.type === selectedType;
+    const equipmentMatch = selectedEquipment === "all" || exercise.equipment === selectedEquipment;
+    const muscleMatch = selectedMuscle === "all" || exercise.muscle.toLowerCase().includes(selectedMuscle.toLowerCase());
+    return typeMatch && equipmentMatch && muscleMatch;
+  });
 
   return (
     <div className="min-h-screen pt-16">
@@ -83,63 +57,123 @@ const Workouts = () => {
               Workout Programs
             </h1>
             <p className="text-lg sm:text-xl text-white/90">
-              Transform your fitness with our expertly designed workout routines
+              Transform your fitness with our designed workout routines
             </p>
           </div>
         </div>
       </section>
 
-      {/* Workouts Grid */}
+      {/* Filters Section */}
+      <section className="py-8 bg-muted/30">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Type</label>
+              <Select value={selectedType} onValueChange={setSelectedType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="Strength">Strength</SelectItem>
+                  <SelectItem value="Cardio">Cardio</SelectItem>
+                  <SelectItem value="Stretching">Stretching</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Equipment</label>
+              <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select equipment" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Equipment</SelectItem>
+                  <SelectItem value="Body Weight">Body Weight</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Muscle</label>
+              <Select value={selectedMuscle} onValueChange={setSelectedMuscle}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select muscle" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Muscles</SelectItem>
+                  <SelectItem value="Chest">Chest</SelectItem>
+                  <SelectItem value="Triceps">Triceps</SelectItem>
+                  <SelectItem value="Shoulders">Shoulders</SelectItem>
+                  <SelectItem value="Core">Core</SelectItem>
+                  <SelectItem value="Abs">Abs</SelectItem>
+                  <SelectItem value="Back">Back</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Exercises Grid */}
       <section className="py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {workouts.map((workout) => (
+            {filteredExercises.map((exercise) => (
               <Card
-                key={workout.id}
-                className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1"
+                key={exercise.id}
+                className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden"
               >
+                <div className="aspect-video w-full overflow-hidden bg-muted">
+                  {exercise.mediaType === "video" ? (
+                    <video
+                      src={exercise.media}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={exercise.media}
+                      alt={exercise.name}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
                 <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <Badge className={getLevelColor(workout.level)}>
-                      {workout.level}
-                    </Badge>
-                  </div>
                   <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                    {workout.title}
+                    {exercise.name}
                   </CardTitle>
-                  <CardDescription>{workout.description}</CardDescription>
+                  <CardDescription>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-md">
+                        {exercise.type}
+                      </span>
+                      <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-md">
+                        {exercise.equipment}
+                      </span>
+                    </div>
+                  </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center text-muted-foreground">
-                      <Clock className="w-4 h-4 mr-2 text-primary" />
-                      {workout.duration}
-                    </div>
-                    <div className="flex items-center text-muted-foreground">
-                      <Flame className="w-4 h-4 mr-2 text-secondary" />
-                      {workout.calories} cal
-                    </div>
+                <CardContent className="space-y-3">
+                  <div>
+                    <span className="text-sm font-medium text-muted-foreground">Target Muscles:</span>
+                    <p className="text-sm mt-1">{exercise.muscle}</p>
                   </div>
-                  <div className="pt-3 border-t border-border">
-                    <div className="flex items-center mb-2">
-                      <Dumbbell className="w-4 h-4 mr-2 text-primary" />
-                      <span className="text-sm font-medium">Exercises:</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {workout.exercises.map((exercise, idx) => (
-                        <span
-                          key={idx}
-                          className="text-xs bg-muted px-2 py-1 rounded-md text-muted-foreground"
-                        >
-                          {exercise}
-                        </span>
-                      ))}
-                    </div>
+                  <div>
+                    <span className="text-sm font-medium text-muted-foreground">How to do it:</span>
+                    <p className="text-sm mt-1 leading-relaxed">{exercise.howTo}</p>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+          {filteredExercises.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg">No exercises found matching your filters.</p>
+            </div>
+          )}
         </div>
       </section>
     </div>

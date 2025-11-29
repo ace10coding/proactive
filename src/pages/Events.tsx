@@ -1,4 +1,4 @@
-import { Calendar, MapPin, Users } from "lucide-react";
+import { Calendar, MapPin } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -6,57 +6,11 @@ const Events = () => {
   const events = [
     {
       id: 1,
-      title: "City Marathon 2024",
-      date: "December 15, 2024",
-      location: "Downtown City Center",
-      participants: 2500,
-      category: "Running",
-      description: "Annual city marathon with 5K, 10K, and full marathon options.",
-    },
-    {
-      id: 2,
-      title: "Wellness Yoga Festival",
-      date: "January 8, 2025",
-      location: "Sunrise Park",
-      participants: 500,
-      category: "Yoga",
-      description: "Day-long yoga and meditation retreat for all skill levels.",
-    },
-    {
-      id: 3,
-      title: "Community Fitness Challenge",
-      date: "January 20, 2025",
-      location: "Community Sports Complex",
-      participants: 1200,
-      category: "Fitness",
-      description: "Team-based fitness competition with multiple workout stations.",
-    },
-    {
-      id: 4,
-      title: "Healthy Living Expo",
-      date: "February 3, 2025",
-      location: "Convention Center",
-      participants: 3000,
-      category: "Wellness",
-      description: "Health and wellness expo featuring nutrition, fitness, and mental health resources.",
-    },
-    {
-      id: 5,
-      title: "Trail Running Adventure",
-      date: "February 17, 2025",
-      location: "Mountain Ridge Trail",
-      participants: 800,
-      category: "Running",
-      description: "Scenic trail run through beautiful mountain landscapes.",
-    },
-    {
-      id: 6,
-      title: "Group Cycling Tour",
-      date: "March 5, 2025",
-      location: "Coastal Highway",
-      participants: 600,
+      title: "City Bicycle Marathon",
+      date: "December 12, 2025",
+      location: "No 85, R. Ngungunhane, Maputo",
       category: "Cycling",
-      description: "Guided cycling tour along the scenic coastal route.",
+      description: "The event will be from Maputo Shopping Center until Circular Tchumene and back to Maputo Shopping Center. 200 Metical for people without a bicycle and free for those who have one.",
     },
   ];
 
@@ -104,10 +58,6 @@ const Events = () => {
                   <div className="flex items-center text-sm text-muted-foreground">
                     <MapPin className="w-4 h-4 mr-2 text-primary" />
                     {event.location}
-                  </div>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Users className="w-4 h-4 mr-2 text-primary" />
-                    {event.participants.toLocaleString()} participants expected
                   </div>
                 </CardContent>
               </Card>
