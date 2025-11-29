@@ -1,10 +1,27 @@
-import { ArrowRight, Heart, Target, Users } from "lucide-react";
+import { ArrowRight, Heart, Target, Users, Mail } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-health.jpg";
 
 const Index = () => {
+  const [email, setEmail] = useState("");
+  const { toast } = useToast();
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email) {
+      toast({
+        title: "Subscribed!",
+        description: "Thank you for subscribing to our health newsletter.",
+      });
+      setEmail("");
+    }
+  };
+
   const posts = [
     {
       id: 1,
@@ -121,6 +138,38 @@ const Index = () => {
               </Card>
             ))}
           </div>
+          
+          {/* Email Subscription */}
+          <div className="max-w-2xl mx-auto mt-12">
+            <Card className="bg-gradient-subtle border-primary/20">
+              <CardContent className="pt-6">
+                <div className="text-center mb-6">
+                  <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4">
+                    <Mail className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-heading font-bold mb-2">
+                    Stay Updated
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Subscribe to receive health tips and wellness updates
+                  </p>
+                </div>
+                <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="flex-1"
+                  />
+                  <Button type="submit" className="bg-primary hover:bg-primary/90">
+                    Subscribe
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
@@ -145,8 +194,7 @@ const Index = () => {
             <Link to="/workouts">
               <Button
                 size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white/10 text-lg px-8"
+                className="bg-secondary hover:bg-secondary/90 text-white text-lg px-8"
               >
                 View Workouts
               </Button>
