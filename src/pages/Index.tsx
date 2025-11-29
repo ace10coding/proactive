@@ -8,23 +8,9 @@ const Index = () => {
   const posts = [
     {
       id: 1,
-      title: "The Importance of Regular Exercise",
-      excerpt: "Discover how daily physical activity can transform your health and well-being. Regular exercise reduces the risk of chronic diseases and improves mental health.",
+      title: "Health Risks of Alcohol-Induced Dehydration",
+      excerpt: "Alcohol acts as a diuretic by suppressing vasopressin, causing kidneys to release more water and electrolytes, leading to dehydration. This can result in kidney problems, electrolyte imbalances, organ stress, high blood pressure, impaired cognitive function, skin issues, and in severe cases, shock or brain damage. Stay hydrated with water, sparkling water, non-alcoholic beverages, infused water, herbal teas, coconut water, or kombucha instead.",
       icon: Heart,
-      color: "text-primary",
-    },
-    {
-      id: 2,
-      title: "Nutrition for Optimal Health",
-      excerpt: "Learn about balanced nutrition and how proper eating habits can fuel your body, boost energy levels, and support long-term wellness goals.",
-      icon: Target,
-      color: "text-secondary",
-    },
-    {
-      id: 3,
-      title: "Mental Health & Physical Wellness",
-      excerpt: "Understand the connection between mental and physical health. Stress management and mindfulness are essential for holistic wellbeing.",
-      icon: Users,
       color: "text-primary",
     },
   ];
@@ -107,13 +93,13 @@ const Index = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl font-heading font-bold mb-4">
-              Health & Wellbeing Advocacy
+              Health & Wellbeing
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Empowering you with knowledge and resources for a healthier lifestyle
+              Empowering you with knowledge for a healthier lifestyle
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
             {posts.map((post) => (
               <Card
                 key={post.id}
