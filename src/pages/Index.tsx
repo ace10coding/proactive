@@ -1,12 +1,173 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { ArrowRight, Heart, Target, Users } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import heroImage from "@/assets/hero-health.jpg";
 
 const Index = () => {
+  const posts = [
+    {
+      id: 1,
+      title: "The Importance of Regular Exercise",
+      excerpt: "Discover how daily physical activity can transform your health and well-being. Regular exercise reduces the risk of chronic diseases and improves mental health.",
+      icon: Heart,
+      color: "text-primary",
+    },
+    {
+      id: 2,
+      title: "Nutrition for Optimal Health",
+      excerpt: "Learn about balanced nutrition and how proper eating habits can fuel your body, boost energy levels, and support long-term wellness goals.",
+      icon: Target,
+      color: "text-secondary",
+    },
+    {
+      id: 3,
+      title: "Mental Health & Physical Wellness",
+      excerpt: "Understand the connection between mental and physical health. Stress management and mindfulness are essential for holistic wellbeing.",
+      icon: Users,
+      color: "text-primary",
+    },
+  ];
+
+  const features = [
+    {
+      title: "Find Events",
+      description: "Join health and fitness events in your community",
+      link: "/events",
+    },
+    {
+      title: "Calculate BMI",
+      description: "Track your health metrics with our BMI calculator",
+      link: "/calculator",
+    },
+    {
+      title: "Get Workouts",
+      description: "Access professional workout programs for all levels",
+      link: "/workouts",
+    },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen pt-16">
+      {/* Hero Section */}
+      <section className="relative h-[600px] overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${heroImage})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-hero" />
+        </div>
+        <div className="relative container mx-auto px-4 sm:px-6 h-full flex items-center">
+          <div className="max-w-2xl text-white">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-bold mb-6 animate-in fade-in-50 slide-in-from-bottom-5 duration-700">
+              Be PROACTIVE About Your Health
+            </h1>
+            <p className="text-xl sm:text-2xl mb-8 text-white/90 animate-in fade-in-50 slide-in-from-bottom-5 duration-700 delay-150">
+              Join our community dedicated to promoting good health and wellbeing through fitness, nutrition, and mindful living.
+            </p>
+            <Link to="/events">
+              <Button
+                size="lg"
+                className="bg-secondary hover:bg-secondary/90 text-white text-lg px-8 animate-in fade-in-50 slide-in-from-bottom-5 duration-700 delay-300"
+              >
+                Explore Events <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {features.map((feature, idx) => (
+              <Link key={idx} to={feature.link}>
+                <Card className="h-full group hover:shadow-elevated transition-all duration-300 hover:-translate-y-2 cursor-pointer">
+                  <CardHeader>
+                    <CardTitle className="text-2xl group-hover:text-primary transition-colors">
+                      {feature.title}
+                    </CardTitle>
+                    <CardDescription className="text-base">
+                      {feature.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-2 transition-transform" />
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Health Advocacy Posts */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl sm:text-5xl font-heading font-bold mb-4">
+              Health & Wellbeing Advocacy
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Empowering you with knowledge and resources for a healthier lifestyle
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {posts.map((post) => (
+              <Card
+                key={post.id}
+                className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1"
+              >
+                <CardHeader>
+                  <div className={`w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <post.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <CardTitle className="text-2xl group-hover:text-primary transition-colors">
+                    {post.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-base leading-relaxed">
+                    {post.excerpt}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-hero">
+        <div className="container mx-auto px-4 sm:px-6 text-center">
+          <h2 className="text-4xl sm:text-5xl font-heading font-bold text-white mb-6">
+            Ready to Transform Your Health?
+          </h2>
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            Take the first step towards a healthier, more active lifestyle today.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/calculator">
+              <Button
+                size="lg"
+                className="bg-white text-primary hover:bg-white/90 text-lg px-8"
+              >
+                Check Your BMI
+              </Button>
+            </Link>
+            <Link to="/workouts">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white/10 text-lg px-8"
+              >
+                View Workouts
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
