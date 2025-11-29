@@ -33,7 +33,7 @@ const Workouts = () => {
       name: "Plank",
       type: "Strength",
       equipment: "Body Weight",
-      muscle: "Core, Abs, Back",
+      muscle: "Core, Abs",
       media: "/images/plank.jpeg",
       mediaType: "image",
       howTo: "Start in a forearm plank position with your elbows directly under your shoulders and forearms parallel to each other. Keep your body in a straight line from head to heels, engaging your core muscles. Hold this position without letting your hips sag or pike up. Focus on breathing steadily while maintaining proper form.",
@@ -54,10 +54,10 @@ const Workouts = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-white mb-4">
-              Workout Programs
+              Workouts
             </h1>
             <p className="text-lg sm:text-xl text-white/90">
-              Transform your fitness with our designed workout routines
+              Transform your fitness with our designed workouts
             </p>
           </div>
         </div>
@@ -131,13 +131,13 @@ const Workouts = () => {
                       loop
                       muted
                       playsInline
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain bg-black"
                     />
                   ) : (
                     <img
                       src={exercise.media}
                       alt={exercise.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain bg-black"
                     />
                   )}
                 </div>
