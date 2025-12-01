@@ -4,8 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Calculator as CalculatorIcon } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Calculator = () => {
+  const { t } = useLanguage();
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [bmi, setBmi] = useState<number | null>(null);
@@ -48,10 +50,10 @@ const Calculator = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-white mb-4">
-              BMI Calculator
+              {t('calculator.hero.title')}
             </h1>
             <p className="text-lg sm:text-xl text-white/90">
-              Calculate your Body Mass Index and understand your health status
+              {t('calculator.hero.subtitle')}
             </p>
           </div>
         </div>
