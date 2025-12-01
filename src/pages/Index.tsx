@@ -26,16 +26,17 @@ const Index = () => {
     {
       id: 1,
       title: "Health Risks of Alcohol-Induced Dehydration",
-      excerpt: "Alcohol acts as a diuretic by suppressing vasopressin, causing kidneys to release more water and electrolytes, leading to dehydration. This can result in kidney problems, electrolyte imbalances, organ stress, high blood pressure, impaired cognitive function, skin issues, and in severe cases, shock or brain damage. Stay hydrated with water, sparkling water, non-alcoholic beverages, infused water, herbal teas, coconut water, or kombucha instead.",
+      excerpt: "Drinking alcohol makes you pee a lot more because it blocks a hormone called vasopressin. When that hormone is suppressed, your kidneys stop retaining water, so you lose fluids and important electrolytes quickly. That's why you wake up after a night of drinking feeling like a dried-out sponge.\n\nThat kind of dehydration isn't just uncomfortable; it can actually be rough on your body. It puts extra strain on your kidneys, throws your electrolytes out of balance (which can make your heart and muscles act weird), raises blood pressure, fogs up your thinking, dries out your skin, and in really bad cases can even lead to dangerously low blood volume (shock) or swelling in the brain.",
       icon: Heart,
       color: "text-primary",
+      link: "#subscribe",
     },
   ];
 
   const features = [
     {
       title: "Find Events",
-      description: "Join health and fitness events in your community",
+      description: "Join health and fitness events",
       link: "/events",
     },
     {
@@ -66,7 +67,7 @@ const Index = () => {
               Be PROACTIVE About Your Health
             </h1>
             <p className="text-xl sm:text-2xl mb-8 text-white/90 animate-in fade-in-50 slide-in-from-bottom-5 duration-700 delay-150">
-              Join our community dedicated to promoting good health and wellbeing through fitness, nutrition, and mindful living.
+              Join our community dedicated to promoting good health and wellbeing.
             </p>
             <Link to="/events">
               <Button
@@ -118,29 +119,28 @@ const Index = () => {
           </div>
           <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
             {posts.map((post) => (
-              <Card
-                key={post.id}
-                className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1"
-              >
-                <CardHeader>
-                  <div className={`w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <post.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <CardTitle className="text-2xl group-hover:text-primary transition-colors">
-                    {post.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base leading-relaxed">
-                    {post.excerpt}
-                  </CardDescription>
-                </CardContent>
-              </Card>
+              <a key={post.id} href={post.link} className="block">
+                <Card className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1">
+                  <CardHeader>
+                    <div className={`w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                      <post.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-2xl group-hover:text-primary transition-colors">
+                      {post.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-base leading-relaxed whitespace-pre-line">
+                      {post.excerpt}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </a>
             ))}
           </div>
           
           {/* Email Subscription */}
-          <div className="max-w-2xl mx-auto mt-12">
+          <div id="subscribe" className="max-w-2xl mx-auto mt-12">
             <Card className="bg-gradient-subtle border-primary/20">
               <CardContent className="pt-6">
                 <div className="text-center mb-6">

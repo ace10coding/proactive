@@ -7,10 +7,10 @@ const Events = () => {
     {
       id: 1,
       title: "City Bicycle Marathon",
-      date: "December 12, 2025",
+      date: "December 12, 2026",
       location: "No 85, R. Ngungunhane, Maputo",
       category: "Cycling",
-      description: "The event will be from Maputo Shopping Center until Circular Tchumene and back to Maputo Shopping Center. 200 Metical for people without a bicycle and free for those who have one.",
+      description: "The ride starts and finishes at Maputo Shopping Centre, following the route to Circular Tchumene and back. Entry is free for everyone who brings their own bicycle and helmet. If you don't have a bike, you can rent a city road bicycle + helmet for only 200 Meticals.",
     },
   ];
 
