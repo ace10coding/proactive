@@ -1,11 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import WorkoutPlanGenerator from "@/components/WorkoutPlanGenerator";
+import WorkoutPlanView from "@/components/WorkoutPlanView";
 
 const Workouts = () => {
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedEquipment, setSelectedEquipment] = useState<string>("all");
   const [selectedMuscle, setSelectedMuscle] = useState<string>("all");
+  const [view, setView] = useState<"exercises" | "generator" | "plan">("exercises");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get("view");
+    const hasPlan = localStorage.getItem("workoutPlan");
+    
+    if (viewParam === "plan" && hasPlan) {
+      setView("plan");
+    } else if (viewParam === "generator") {
+      setView("generator");
+    }
+  }, []);
 
   const exercises = [
     {
@@ -63,61 +80,66 @@ const Workouts = () => {
         </div>
       </section>
 
-      {/* Filters Section */}
+      {/* View Tabs */}
       <section className="py-8 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Type</label>
-              <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="Strength">Strength</SelectItem>
-                  <SelectItem value="Cardio">Cardio</SelectItem>
-                  <SelectItem value="Stretching">Stretching</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Equipment</label>
-              <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select equipment" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Equipment</SelectItem>
-                  <SelectItem value="Body Weight">Body Weight</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Muscle</label>
-              <Select value={selectedMuscle} onValueChange={setSelectedMuscle}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select muscle" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Muscles</SelectItem>
-                  <SelectItem value="Chest">Chest</SelectItem>
-                  <SelectItem value="Triceps">Triceps</SelectItem>
-                  <SelectItem value="Shoulders">Shoulders</SelectItem>
-                  <SelectItem value="Core">Core</SelectItem>
-                  <SelectItem value="Abs">Abs</SelectItem>
-                  <SelectItem value="Back">Back</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      </section>
+          <Tabs value={view} onValueChange={(v) => setView(v as any)} className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-8">
+              <TabsTrigger value="exercises">Exercise Library</TabsTrigger>
+              <TabsTrigger value="generator">Create Workout Plan</TabsTrigger>
+              <TabsTrigger value="plan">My Plan</TabsTrigger>
+            </TabsList>
 
-      {/* Exercises Grid */}
-      <section className="py-16">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <TabsContent value="exercises">
+              {/* Filters Section */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Type</label>
+                  <Select value={selectedType} onValueChange={setSelectedType}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="Strength">Strength</SelectItem>
+                      <SelectItem value="Cardio">Cardio</SelectItem>
+                      <SelectItem value="Stretching">Stretching</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Equipment</label>
+                  <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select equipment" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Equipment</SelectItem>
+                      <SelectItem value="Body Weight">Body Weight</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Muscle</label>
+                  <Select value={selectedMuscle} onValueChange={setSelectedMuscle}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select muscle" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Muscles</SelectItem>
+                      <SelectItem value="Chest">Chest</SelectItem>
+                      <SelectItem value="Triceps">Triceps</SelectItem>
+                      <SelectItem value="Shoulders">Shoulders</SelectItem>
+                      <SelectItem value="Core">Core</SelectItem>
+                      <SelectItem value="Abs">Abs</SelectItem>
+                      <SelectItem value="Back">Back</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Exercises Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
             {filteredExercises.map((exercise) => (
               <Card
                 key={exercise.id}
@@ -131,13 +153,13 @@ const Workouts = () => {
                       loop
                       muted
                       playsInline
-                      className="w-full h-full object-contain bg-black"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
                     <img
                       src={exercise.media}
                       alt={exercise.name}
-                      className="w-full h-full object-contain bg-black"
+                      className="w-full h-full object-cover"
                     />
                   )}
                 </div>
@@ -167,13 +189,23 @@ const Workouts = () => {
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-          {filteredExercises.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground text-lg">No exercises found matching your filters.</p>
-            </div>
-          )}
+                ))}
+              </div>
+              {filteredExercises.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground text-lg">No exercises found matching your filters.</p>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="generator">
+              <WorkoutPlanGenerator />
+            </TabsContent>
+
+            <TabsContent value="plan">
+              <WorkoutPlanView />
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
     </div>
