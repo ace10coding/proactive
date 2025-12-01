@@ -3,14 +3,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLanguage } from "@/contexts/LanguageContext";
+import VideoModal from "@/components/VideoModal";
 import WorkoutPlanGenerator from "@/components/WorkoutPlanGenerator";
 import WorkoutPlanView from "@/components/WorkoutPlanView";
 
 const Workouts = () => {
+  const { t } = useLanguage();
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedEquipment, setSelectedEquipment] = useState<string>("all");
   const [selectedMuscle, setSelectedMuscle] = useState<string>("all");
   const [view, setView] = useState<"exercises" | "generator" | "plan">("exercises");
+  const [selectedVideo, setSelectedVideo] = useState<{ src: string; title: string } | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -51,8 +55,8 @@ const Workouts = () => {
       type: "Strength",
       equipment: "Body Weight",
       muscle: "Core, Abs",
-      media: "/images/plank.jpeg",
-      mediaType: "image",
+      media: "/videos/plank.mp4",
+      mediaType: "video",
       howTo: "Start in a forearm plank position with your elbows directly under your shoulders and forearms parallel to each other. Keep your body in a straight line from head to heels, engaging your core muscles. Hold this position without letting your hips sag or pike up. Focus on breathing steadily while maintaining proper form.",
     },
   ];
@@ -71,10 +75,10 @@ const Workouts = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-white mb-4">
-              Workouts
+              {t('workouts.hero.title')}
             </h1>
             <p className="text-lg sm:text-xl text-white/90">
-              Transform your fitness with our designed workouts
+              {t('workouts.hero.subtitle')}
             </p>
           </div>
         </div>
@@ -85,54 +89,54 @@ const Workouts = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <Tabs value={view} onValueChange={(v) => setView(v as any)} className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="exercises">Exercise Library</TabsTrigger>
-              <TabsTrigger value="generator">Create Workout Plan</TabsTrigger>
-              <TabsTrigger value="plan">My Plan</TabsTrigger>
+              <TabsTrigger value="exercises">{t('workouts.tabs.library')}</TabsTrigger>
+              <TabsTrigger value="generator">{t('workouts.tabs.generator')}</TabsTrigger>
+              <TabsTrigger value="plan">{t('workouts.tabs.plan')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="exercises">
               {/* Filters Section */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Type</label>
+                  <label className="block text-sm font-medium mb-2">{t('workouts.filters.type')}</label>
                   <Select value={selectedType} onValueChange={setSelectedType}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
+                      <SelectValue placeholder={t('workouts.filters.type')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
-                      <SelectItem value="Strength">Strength</SelectItem>
-                      <SelectItem value="Cardio">Cardio</SelectItem>
-                      <SelectItem value="Stretching">Stretching</SelectItem>
+                      <SelectItem value="all">{t('workouts.filters.allTypes')}</SelectItem>
+                      <SelectItem value="Strength">{t('workouts.types.strength')}</SelectItem>
+                      <SelectItem value="Cardio">{t('workouts.types.cardio')}</SelectItem>
+                      <SelectItem value="Stretching">{t('workouts.types.stretching')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Equipment</label>
+                  <label className="block text-sm font-medium mb-2">{t('workouts.filters.equipment')}</label>
                   <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select equipment" />
+                      <SelectValue placeholder={t('workouts.filters.equipment')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Equipment</SelectItem>
-                      <SelectItem value="Body Weight">Body Weight</SelectItem>
+                      <SelectItem value="all">{t('workouts.filters.allEquipment')}</SelectItem>
+                      <SelectItem value="Body Weight">{t('workouts.equipment.bodyweight')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Muscle</label>
+                  <label className="block text-sm font-medium mb-2">{t('workouts.filters.muscle')}</label>
                   <Select value={selectedMuscle} onValueChange={setSelectedMuscle}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select muscle" />
+                      <SelectValue placeholder={t('workouts.filters.muscle')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Muscles</SelectItem>
-                      <SelectItem value="Chest">Chest</SelectItem>
-                      <SelectItem value="Triceps">Triceps</SelectItem>
-                      <SelectItem value="Shoulders">Shoulders</SelectItem>
-                      <SelectItem value="Core">Core</SelectItem>
-                      <SelectItem value="Abs">Abs</SelectItem>
-                      <SelectItem value="Back">Back</SelectItem>
+                      <SelectItem value="all">{t('workouts.filters.allMuscles')}</SelectItem>
+                      <SelectItem value="Chest">{t('workouts.muscles.chest')}</SelectItem>
+                      <SelectItem value="Triceps">{t('workouts.muscles.triceps')}</SelectItem>
+                      <SelectItem value="Shoulders">{t('workouts.muscles.shoulders')}</SelectItem>
+                      <SelectItem value="Core">{t('workouts.muscles.core')}</SelectItem>
+                      <SelectItem value="Abs">{t('workouts.muscles.abs')}</SelectItem>
+                      <SelectItem value="Back">{t('workouts.muscles.back')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -208,6 +212,13 @@ const Workouts = () => {
           </Tabs>
         </div>
       </section>
+      
+      <VideoModal
+        isOpen={!!selectedVideo}
+        onClose={() => setSelectedVideo(null)}
+        videoSrc={selectedVideo?.src || ""}
+        title={selectedVideo?.title || ""}
+      />
     </div>
   );
 };

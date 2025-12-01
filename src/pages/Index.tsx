@@ -1,6 +1,7 @@
 import { ArrowRight, Heart, Target, Users, Mail } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,13 +11,14 @@ import heroImage from "@/assets/hero-health.jpg";
 const Index = () => {
   const [email, setEmail] = useState("");
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
       toast({
-        title: "Subscribed!",
-        description: "Thank you for subscribing to our health newsletter.",
+        title: t('home.newsletter.success'),
+        description: t('home.newsletter.success'),
       });
       setEmail("");
     }
@@ -35,8 +37,8 @@ const Index = () => {
 
   const features = [
     {
-      title: "Find Events",
-      description: "Join health and fitness events",
+      title: t('home.features.events.title'),
+      description: t('home.features.events.desc'),
       link: "/events",
     },
     {
@@ -45,8 +47,8 @@ const Index = () => {
       link: "/calculator",
     },
     {
-      title: "Get Workouts",
-      description: "Access professional workout programs for all levels",
+      title: t('home.features.workouts.title'),
+      description: t('home.features.workouts.desc'),
       link: "/workouts",
     },
   ];
@@ -64,19 +66,29 @@ const Index = () => {
         <div className="relative container mx-auto px-4 sm:px-6 h-full flex items-center">
           <div className="max-w-2xl text-white">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-bold mb-6 animate-in fade-in-50 slide-in-from-bottom-5 duration-700">
-              Be PROACTIVE About Your Health
+              {t('home.hero.title')}
             </h1>
             <p className="text-xl sm:text-2xl mb-8 text-white/90 animate-in fade-in-50 slide-in-from-bottom-5 duration-700 delay-150">
-              Join our community dedicated to promoting good health and wellbeing.
+              {t('home.hero.subtitle')}
             </p>
-            <Link to="/events">
-              <Button
-                size="lg"
-                className="bg-secondary hover:bg-secondary/90 text-white text-lg px-8 animate-in fade-in-50 slide-in-from-bottom-5 duration-700 delay-300"
-              >
-                Explore Events <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
+            <div className="flex flex-wrap gap-4">
+              <Link to="/workouts">
+                <Button
+                  size="lg"
+                  className="bg-secondary hover:bg-secondary/90 text-white text-lg px-8 animate-in fade-in-50 slide-in-from-bottom-5 duration-700 delay-300"
+                >
+                  {t('home.hero.viewWorkouts')} <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <Link to="/calculator">
+                <Button
+                  size="lg"
+                  className="bg-secondary hover:bg-secondary/90 text-white text-lg px-8 animate-in fade-in-50 slide-in-from-bottom-5 duration-700 delay-300"
+                >
+                  {t('home.hero.checkBMI')} <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -111,10 +123,10 @@ const Index = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl font-heading font-bold mb-4">
-              Health & Wellbeing
+              {t('home.blog.title')}
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Empowering you with knowledge for a healthier lifestyle
+              {t('home.features.advocacy.desc')}
             </p>
           </div>
           <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
@@ -148,23 +160,23 @@ const Index = () => {
                     <Mail className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-2xl font-heading font-bold mb-2">
-                    Stay Updated
+                    {t('home.newsletter.title')}
                   </h3>
                   <p className="text-muted-foreground">
-                    Subscribe to receive health tips and wellness updates
+                    {t('home.newsletter.desc')}
                   </p>
                 </div>
                 <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
                   <Input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={t('home.newsletter.placeholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     className="flex-1"
                   />
                   <Button type="submit" className="bg-primary hover:bg-primary/90">
-                    Subscribe
+                    {t('home.newsletter.button')}
                   </Button>
                 </form>
               </CardContent>
