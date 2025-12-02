@@ -14,13 +14,101 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      health_chat_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          role?: string
+          session_id?: string
+        }
+        Relationships: []
+      }
+      support_posts: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          topic_id: string
+          username: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          topic_id: string
+          username?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          topic_id?: string
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_posts_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "support_topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_topics: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_anonymous: boolean | null
+          title: string
+          view_count: number | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          title: string
+          view_count?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          title?: string
+          view_count?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_topic_views: { Args: { topic_id: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
