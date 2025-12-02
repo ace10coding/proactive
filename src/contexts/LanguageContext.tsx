@@ -17,6 +17,8 @@ const translations = {
     'nav.events': 'Events',
     'nav.workouts': 'Workouts',
     'nav.calculator': 'Calculator',
+    'nav.assistant': 'Health Assistant',
+    'nav.support': 'Support Groups',
     
     // Home page
     'home.hero.title': 'Your Journey to Better Health Starts Here',
@@ -74,6 +76,30 @@ const translations = {
     // Calculator page
     'calculator.hero.title': 'BMI Calculator',
     'calculator.hero.subtitle': 'Calculate your Body Mass Index and understand your health metrics',
+    
+    // Health Assistant
+    'health.assistant.title': 'AI Health Assistant',
+    'health.assistant.subtitle': 'Get personalized health and wellness guidance',
+    'health.assistant.disclaimer': '⚠️ This AI assistant provides general wellness information only. It cannot diagnose conditions or prescribe medication. Always consult healthcare professionals for medical advice.',
+    'health.assistant.welcome': 'Hello! I\'m your health and wellness assistant. Ask me about healthy habits, nutrition, exercise, or general wellness tips!',
+    'health.assistant.placeholder': 'Ask about your health...',
+    
+    // Support Groups
+    'support.title': 'Anonymous Support Groups',
+    'support.subtitle': 'Connect with others, share experiences, and support each other on your wellness journey',
+    'support.createTopic': 'Create New Topic',
+    'support.newTopic': 'New Support Topic',
+    'support.topicTitle': 'Topic Title',
+    'support.description': 'Description',
+    'support.category': 'Category',
+    'support.create': 'Create Topic',
+    'support.topics': 'Topics',
+    'support.username': 'Your name (optional, leave blank for Anonymous)',
+    'support.reply': 'Share your thoughts...',
+    'support.post': 'Post Reply',
+    'support.selectTopic': 'Select a topic to view discussions',
+    'support.success': 'Success',
+    'support.topicCreated': 'Topic created successfully',
   },
   pt: {
     // Navigation
@@ -81,6 +107,8 @@ const translations = {
     'nav.events': 'Eventos',
     'nav.workouts': 'Exercícios',
     'nav.calculator': 'Calculadora',
+    'nav.assistant': 'Assistente de Saúde',
+    'nav.support': 'Grupos de Apoio',
     
     // Home page
     'home.hero.title': 'Sua Jornada para uma Melhor Saúde Começa Aqui',
@@ -138,6 +166,30 @@ const translations = {
     // Calculator page
     'calculator.hero.title': 'Calculadora de IMC',
     'calculator.hero.subtitle': 'Calcule seu Índice de Massa Corporal e entenda suas métricas de saúde',
+    
+    // Health Assistant
+    'health.assistant.title': 'Assistente de Saúde IA',
+    'health.assistant.subtitle': 'Obtenha orientações personalizadas de saúde e bem-estar',
+    'health.assistant.disclaimer': '⚠️ Este assistente de IA fornece apenas informações gerais de bem-estar. Não pode diagnosticar condições ou prescrever medicamentos. Sempre consulte profissionais de saúde para aconselhamento médico.',
+    'health.assistant.welcome': 'Olá! Sou seu assistente de saúde e bem-estar. Pergunte-me sobre hábitos saudáveis, nutrição, exercícios ou dicas gerais de bem-estar!',
+    'health.assistant.placeholder': 'Pergunte sobre sua saúde...',
+    
+    // Support Groups
+    'support.title': 'Grupos de Apoio Anônimos',
+    'support.subtitle': 'Conecte-se com outras pessoas, compartilhe experiências e apoie-se mutuamente em sua jornada de bem-estar',
+    'support.createTopic': 'Criar Novo Tópico',
+    'support.newTopic': 'Novo Tópico de Apoio',
+    'support.topicTitle': 'Título do Tópico',
+    'support.description': 'Descrição',
+    'support.category': 'Categoria',
+    'support.create': 'Criar Tópico',
+    'support.topics': 'Tópicos',
+    'support.username': 'Seu nome (opcional, deixe em branco para Anônimo)',
+    'support.reply': 'Compartilhe seus pensamentos...',
+    'support.post': 'Postar Resposta',
+    'support.selectTopic': 'Selecione um tópico para ver discussões',
+    'support.success': 'Sucesso',
+    'support.topicCreated': 'Tópico criado com sucesso',
   },
 };
 
