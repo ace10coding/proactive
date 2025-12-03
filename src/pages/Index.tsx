@@ -67,56 +67,75 @@ const Index = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size for social media (1200x630 for optimal sharing)
-    canvas.width = 1200;
-    canvas.height = 630;
+    // Set canvas size for vertical social media (1080x1920 for Instagram stories)
+    canvas.width = 1080;
+    canvas.height = 1920;
 
     // Background gradient
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
     gradient.addColorStop(0, '#1a1a2e');
-    gradient.addColorStop(1, '#16213e');
+    gradient.addColorStop(0.5, '#16213e');
+    gradient.addColorStop(1, '#0f172a');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // PROACTIVE watermark with gradient (top left)
-    ctx.font = 'bold 28px system-ui';
-    const watermarkGradient = ctx.createLinearGradient(40, 40, 200, 40);
+    ctx.font = 'bold 36px system-ui';
+    const watermarkGradient = ctx.createLinearGradient(60, 80, 280, 80);
     watermarkGradient.addColorStop(0, '#22c55e');
     watermarkGradient.addColorStop(1, '#3b82f6');
     ctx.fillStyle = watermarkGradient;
-    ctx.fillText('PROACTIVE', 40, 60);
+    ctx.fillText('PROACTIVE', 60, 100);
 
-    // "Did you know?" header
-    ctx.font = 'bold 32px system-ui';
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillText('Did you know?', 40, 180);
-
-    // Title
+    // "Did you know?" header - centered
     ctx.font = 'bold 48px system-ui';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(t(post.titleKey), 40, 250);
+    ctx.fillStyle = '#94a3b8';
+    const headerText = 'Did you know?';
+    const headerWidth = ctx.measureText(headerText).width;
+    ctx.fillText(headerText, (canvas.width - headerWidth) / 2, 700);
 
-    // Content - word wrap
-    ctx.font = '28px system-ui';
+    // Title - centered
+    ctx.font = 'bold 64px system-ui';
+    ctx.fillStyle = '#ffffff';
+    const titleText = t(post.titleKey);
+    const titleWidth = ctx.measureText(titleText).width;
+    ctx.fillText(titleText, (canvas.width - titleWidth) / 2, 800);
+
+    // Content - word wrap, centered
+    ctx.font = '36px system-ui';
     ctx.fillStyle = '#e2e8f0';
     const content = t(post.contentKey);
     const words = content.split(' ');
     let line = '';
-    let y = 320;
-    const maxWidth = canvas.width - 80;
+    let y = 920;
+    const maxWidth = canvas.width - 120;
+    const lines: string[] = [];
 
     for (const word of words) {
       const testLine = line + word + ' ';
       const metrics = ctx.measureText(testLine);
       if (metrics.width > maxWidth) {
-        ctx.fillText(line, 40, y);
+        lines.push(line.trim());
         line = word + ' ';
-        y += 40;
       } else {
         line = testLine;
       }
     }
-    ctx.fillText(line, 40, y);
+    lines.push(line.trim());
+
+    // Draw centered lines
+    for (const l of lines) {
+      const lineWidth = ctx.measureText(l).width;
+      ctx.fillText(l, (canvas.width - lineWidth) / 2, y);
+      y += 50;
+    }
+
+    // Bottom branding
+    ctx.font = 'bold 28px system-ui';
+    ctx.fillStyle = '#64748b';
+    const brandingText = 'proactive.health';
+    const brandingWidth = ctx.measureText(brandingText).width;
+    ctx.fillText(brandingText, (canvas.width - brandingWidth) / 2, 1800);
 
     // Download the image
     const link = document.createElement('a');
@@ -125,8 +144,8 @@ const Index = () => {
     link.click();
 
     toast({
-      title: "Image downloaded!",
-      description: "Share it on your favorite social media platform.",
+      title: t('didyouknow.imageDownloaded'),
+      description: t('didyouknow.shareDescription'),
     });
   };
 
@@ -203,10 +222,10 @@ const Index = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl font-heading font-bold mb-4">
-              {t('home.blog.title')}
+              {t('didyouknow.title')}
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t('home.blog.subtitle')}
+              {t('didyouknow.subtitle')}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
