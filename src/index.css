@@ -94,31 +94,9 @@ All colors MUST be HSL.
     @apply font-heading font-bold;
   }
 
-  /* GIF Optimization - Ensure smooth animation and proper frame display */
+  /* Keep GIFs native - allow browser to handle animation */
   img[src*=".gif"] {
-    image-rendering: auto;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    contain: layout style paint;
-    will-change: transform;
-  }
-
-  /* Exercise card GIF container - force proper frame rendering */
-  .aspect-video {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .aspect-video img[src*=".gif"] {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: contain;
-    animation-timing-function: steps(1, end);
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+    display: block;
   }
 
   /* Fade in animation for images */
