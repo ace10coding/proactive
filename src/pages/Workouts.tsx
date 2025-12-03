@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import VideoModal from "@/components/VideoModal";
 import WorkoutPlanGenerator from "@/components/WorkoutPlanGenerator";
 import WorkoutPlanView from "@/components/WorkoutPlanView";
 
@@ -12,9 +13,8 @@ const Workouts = () => {
   const { t } = useLanguage();
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedEquipment, setSelectedEquipment] = useState<string>("all");
-  const [selectedMuscle, setSelectedMuscle] = useState<string>("all");
   const [view, setView] = useState<"exercises" | "generator" | "plan">("exercises");
-  const [selectedVideo, setSelectedVideo] = useState<{ src: string; title: string } | null>(null);
+  const [fullscreenImage, setFullscreenImage] = useState<{ src: string; title: string } | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -31,41 +31,34 @@ const Workouts = () => {
   const exercises = [
     {
       id: 1,
-      name: "Push Up",
+      nameKey: "exercise.barbellFrontRaises.name",
       type: "Strength",
-      equipment: "Body Weight",
-      muscle: "Chest, Triceps, Shoulders",
-      media: "/videos/push-up.mp4",
-      mediaType: "video",
-      howTo: "Start in a high plank position with hands slightly wider than shoulder-width. Lower your body until your chest nearly touches the floor, keeping your elbows at a 45-degree angle. Push back up to the starting position. Keep your core engaged and body in a straight line throughout the movement.",
+      equipment: "Barbell",
+      media: "/images/barbell-front-raises.gif",
+      howToKey: "exercise.barbellFrontRaises.howTo",
     },
     {
       id: 2,
-      name: "Diamond Push Up",
+      nameKey: "exercise.arnoldPress.name",
       type: "Strength",
-      equipment: "Body Weight",
-      muscle: "Triceps, Chest, Shoulders",
-      media: "/videos/diamond-push-up.mp4",
-      mediaType: "video",
-      howTo: "Start in a high plank position with your hands close together, forming a diamond shape with your index fingers and thumbs. Lower your body while keeping your elbows close to your sides. Push back up to the starting position. This variation puts more emphasis on the triceps.",
+      equipment: "Dumbbells",
+      media: "/images/arnold-press.gif",
+      howToKey: "exercise.arnoldPress.howTo",
     },
     {
       id: 3,
-      name: "Plank",
+      nameKey: "exercise.barbellUprightRows.name",
       type: "Strength",
-      equipment: "Body Weight",
-      muscle: "Core, Abs",
-      media: "/videos/plank.mp4",
-      mediaType: "video",
-      howTo: "Start in a forearm plank position with your elbows directly under your shoulders and forearms parallel to each other. Keep your body in a straight line from head to heels, engaging your core muscles. Hold this position without letting your hips sag or pike up. Focus on breathing steadily while maintaining proper form.",
+      equipment: "Barbell",
+      media: "/images/barbell-upright-rows.gif",
+      howToKey: "exercise.barbellUprightRows.howTo",
     },
   ];
 
   const filteredExercises = exercises.filter((exercise) => {
     const typeMatch = selectedType === "all" || exercise.type === selectedType;
     const equipmentMatch = selectedEquipment === "all" || exercise.equipment === selectedEquipment;
-    const muscleMatch = selectedMuscle === "all" || exercise.muscle.toLowerCase().includes(selectedMuscle.toLowerCase());
-    return typeMatch && equipmentMatch && muscleMatch;
+    return typeMatch && equipmentMatch;
   });
 
   return (
@@ -96,7 +89,7 @@ const Workouts = () => {
 
             <TabsContent value="exercises">
               {/* Filters Section */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">{t('workouts.filters.type')}</label>
                   <Select value={selectedType} onValueChange={setSelectedType}>
@@ -119,24 +112,8 @@ const Workouts = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">{t('workouts.filters.allEquipment')}</SelectItem>
-                      <SelectItem value="Body Weight">{t('workouts.equipment.bodyweight')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('workouts.filters.muscle')}</label>
-                  <Select value={selectedMuscle} onValueChange={setSelectedMuscle}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('workouts.filters.muscle')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{t('workouts.filters.allMuscles')}</SelectItem>
-                      <SelectItem value="Chest">{t('workouts.muscles.chest')}</SelectItem>
-                      <SelectItem value="Triceps">{t('workouts.muscles.triceps')}</SelectItem>
-                      <SelectItem value="Shoulders">{t('workouts.muscles.shoulders')}</SelectItem>
-                      <SelectItem value="Core">{t('workouts.muscles.core')}</SelectItem>
-                      <SelectItem value="Abs">{t('workouts.muscles.abs')}</SelectItem>
-                      <SelectItem value="Back">{t('workouts.muscles.back')}</SelectItem>
+                      <SelectItem value="Barbell">{t('workouts.equipment.barbell')}</SelectItem>
+                      <SelectItem value="Dumbbells">{t('workouts.equipment.dumbbells')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -144,60 +121,53 @@ const Workouts = () => {
 
               {/* Exercises Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-            {filteredExercises.map((exercise) => (
-              <Card
-                key={exercise.id}
-                className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden"
-              >
-                <div className="aspect-video w-full overflow-hidden bg-muted">
-                  {exercise.mediaType === "video" ? (
-                    <video
-                      src={exercise.media}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <img
-                      src={exercise.media}
-                      alt={exercise.name}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-                <CardHeader>
-                  <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                    {exercise.name}
-                  </CardTitle>
-                  <CardDescription>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-md">
-                        {exercise.type}
-                      </span>
-                      <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-md">
-                        {exercise.equipment}
-                      </span>
+                {filteredExercises.map((exercise) => (
+                  <Card
+                    key={exercise.id}
+                    className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+                  >
+                    <div 
+                      className="aspect-video w-full overflow-hidden bg-muted cursor-pointer relative"
+                      onClick={() => setFullscreenImage({ src: exercise.media, title: t(exercise.nameKey) })}
+                    >
+                      <img
+                        src={exercise.media}
+                        alt={t(exercise.nameKey)}
+                        className="w-full h-full object-contain bg-white"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                        <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium">
+                          {t('workouts.clickFullscreen')}
+                        </span>
+                      </div>
                     </div>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div>
-                    <span className="text-sm font-medium text-muted-foreground">Target Muscles:</span>
-                    <p className="text-sm mt-1">{exercise.muscle}</p>
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-muted-foreground">How to do it:</span>
-                    <p className="text-sm mt-1 leading-relaxed">{exercise.howTo}</p>
-                  </div>
-                </CardContent>
-              </Card>
+                    <CardHeader>
+                      <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                        {t(exercise.nameKey)}
+                      </CardTitle>
+                      <CardDescription>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-md">
+                            {exercise.type === "Strength" ? t('workouts.types.strength') : exercise.type}
+                          </span>
+                          <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-md">
+                            {exercise.equipment === "Barbell" ? t('workouts.equipment.barbell') : t('workouts.equipment.dumbbells')}
+                          </span>
+                        </div>
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div>
+                        <span className="text-sm font-medium text-muted-foreground">{t('workouts.howTo')}</span>
+                        <p className="text-sm mt-1 leading-relaxed">{t(exercise.howToKey)}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
               {filteredExercises.length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-muted-foreground text-lg">No exercises found matching your filters.</p>
+                  <p className="text-muted-foreground text-lg">{t('workouts.noResults')}</p>
                 </div>
               )}
             </TabsContent>
@@ -213,12 +183,31 @@ const Workouts = () => {
         </div>
       </section>
       
-      <VideoModal
-        isOpen={!!selectedVideo}
-        onClose={() => setSelectedVideo(null)}
-        videoSrc={selectedVideo?.src || ""}
-        title={selectedVideo?.title || ""}
-      />
+      {/* Fullscreen Image Modal */}
+      <Dialog open={!!fullscreenImage} onOpenChange={() => setFullscreenImage(null)}>
+        <DialogContent className="max-w-4xl w-full p-0 bg-white">
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white"
+              onClick={() => setFullscreenImage(null)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            <div className="bg-white p-4">
+              <h3 className="text-xl font-semibold mb-4">{fullscreenImage?.title}</h3>
+              <div className="aspect-video w-full bg-white flex items-center justify-center">
+                <img
+                  src={fullscreenImage?.src || ""}
+                  alt={fullscreenImage?.title || ""}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -11,7 +11,7 @@ const Calculator = () => {
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [bmi, setBmi] = useState<number | null>(null);
-  const [category, setCategory] = useState("");
+  const [categoryKey, setCategoryKey] = useState("");
 
   const calculateBMI = () => {
     const weightNum = parseFloat(weight);
@@ -24,13 +24,13 @@ const Calculator = () => {
 
       // Determine BMI category
       if (bmiValue < 18.5) {
-        setCategory("Underweight");
+        setCategoryKey("calculator.underweight");
       } else if (bmiValue >= 18.5 && bmiValue < 25) {
-        setCategory("Normal weight");
+        setCategoryKey("calculator.normal");
       } else if (bmiValue >= 25 && bmiValue < 30) {
-        setCategory("Overweight");
+        setCategoryKey("calculator.overweight");
       } else {
-        setCategory("Obese");
+        setCategoryKey("calculator.obese");
       }
     }
   };
@@ -67,31 +67,31 @@ const Calculator = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CalculatorIcon className="w-6 h-6 text-primary" />
-                  Calculate Your BMI
+                  {t('calculator.title')}
                 </CardTitle>
                 <CardDescription>
-                  Enter your weight and height to calculate your Body Mass Index
+                  {t('calculator.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="weight">Weight (kg)</Label>
+                    <Label htmlFor="weight">{t('calculator.weight')}</Label>
                     <Input
                       id="weight"
                       type="number"
-                      placeholder="e.g., 70"
+                      placeholder={t('calculator.weightPlaceholder')}
                       value={weight}
                       onChange={(e) => setWeight(e.target.value)}
                       className="text-lg"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="height">Height (cm)</Label>
+                    <Label htmlFor="height">{t('calculator.height')}</Label>
                     <Input
                       id="height"
                       type="number"
-                      placeholder="e.g., 175"
+                      placeholder={t('calculator.heightPlaceholder')}
                       value={height}
                       onChange={(e) => setHeight(e.target.value)}
                       className="text-lg"
@@ -102,36 +102,36 @@ const Calculator = () => {
                     className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
                     size="lg"
                   >
-                    Calculate BMI
+                    {t('calculator.calculate')}
                   </Button>
                 </div>
 
                 {bmi && (
                   <div className="mt-8 p-6 rounded-lg bg-muted/50 space-y-4 animate-in fade-in-50 slide-in-from-bottom-3">
                     <div className="text-center">
-                      <p className="text-sm text-muted-foreground mb-2">Your BMI is</p>
+                      <p className="text-sm text-muted-foreground mb-2">{t('calculator.yourBmi')}</p>
                       <p className={`text-5xl font-heading font-bold ${getBMIColor()}`}>
                         {bmi}
                       </p>
-                      <p className="text-xl font-medium text-foreground mt-2">{category}</p>
+                      <p className="text-xl font-medium text-foreground mt-2">{t(categoryKey)}</p>
                     </div>
                     <div className="pt-4 border-t border-border">
-                      <h3 className="font-semibold mb-3">BMI Categories:</h3>
+                      <h3 className="font-semibold mb-3">{t('calculator.categories')}</h3>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Underweight:</span>
+                          <span className="text-muted-foreground">{t('calculator.underweight')}:</span>
                           <span className="font-medium">BMI &lt; 18.5</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Normal weight:</span>
+                          <span className="text-muted-foreground">{t('calculator.normal')}:</span>
                           <span className="font-medium">BMI 18.5 - 24.9</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Overweight:</span>
+                          <span className="text-muted-foreground">{t('calculator.overweight')}:</span>
                           <span className="font-medium">BMI 25 - 29.9</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Obese:</span>
+                          <span className="text-muted-foreground">{t('calculator.obese')}:</span>
                           <span className="font-medium">BMI ≥ 30</span>
                         </div>
                       </div>
