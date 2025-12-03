@@ -909,19 +909,19 @@ const Workouts = () => {
       
       {/* Fullscreen Image Modal */}
       <Dialog open={!!fullscreenExercise} onOpenChange={() => setFullscreenExercise(null)}>
-        <DialogContent className="max-w-4xl w-full p-0 bg-white">
-          <div className="relative">
+        <DialogContent className="max-w-full w-screen h-screen p-0 bg-black flex flex-col" style={{ maxHeight: '100vh' }}>
+          <div className="relative flex flex-col h-full">
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white"
+              className="absolute top-4 right-4 z-10 bg-black/70 hover:bg-black/90 text-white rounded-full"
               onClick={() => setFullscreenExercise(null)}
             >
-              <X className="h-4 w-4" />
+              <X className="h-6 w-6" />
             </Button>
-            <div className="bg-white p-4">
-              <h3 className="text-xl font-semibold mb-4">{fullscreenExercise?.title}</h3>
-              <div className="aspect-video w-full bg-white flex items-center justify-center">
+            <div className="bg-black p-6 flex-1 flex flex-col overflow-hidden">
+              <h3 className="text-2xl font-semibold mb-6 text-white">{fullscreenExercise?.title}</h3>
+              <div className="flex-1 w-full bg-white flex items-center justify-center overflow-hidden rounded-lg">
                 {fullscreenExercise?.exercise.media ? (
                   <img
                     src={fullscreenExercise.exercise.media}
