@@ -1,11 +1,11 @@
-import { Calendar, MapPin, Plus, X } from "lucide-react";
+import { Calendar, MapPin, Plus, X, Upload } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const ADMIN_PASSWORD = "Asdfghjkl96611!";
@@ -21,6 +21,7 @@ const Events = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   useEffect(() => {
     const stored = localStorage.getItem(GALLERY_STORAGE_KEY);
@@ -50,6 +51,45 @@ const Events = () => {
       title: t('support.success'),
       description: t('events.imageAdded'),
     });
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (password !== ADMIN_PASSWORD) {
+      toast({
+        title: "Error",
+        description: t('events.wrongPassword'),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const files = event.target.files;
+    if (!files) return;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        const base64String = e.target?.result as string;
+        const newImages = [...galleryImages, base64String];
+        setGalleryImages(newImages);
+        localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(newImages));
+        
+        toast({
+          title: t('support.success'),
+          description: t('events.imageAdded'),
+        });
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    setIsAuthenticated(true);
   };
 
   const handleRemoveImage = (index: number) => {
@@ -164,14 +204,37 @@ const Events = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                               />
                             )}
-                            <Input
-                              placeholder={t('events.imageUrl')}
-                              value={imageUrl}
-                              onChange={(e) => setImageUrl(e.target.value)}
-                            />
-                            <Button onClick={handleAddImage} size="sm">
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">{t('events.imageUrl')}</label>
+                              <Input
+                                placeholder={t('events.imageUrl')}
+                                value={imageUrl}
+                                onChange={(e) => setImageUrl(e.target.value)}
+                              />
+                            </div>
+                            <Button onClick={handleAddImage} size="sm" className="w-full">
                               {t('events.add')}
                             </Button>
+                            <div className="relative">
+                              <input
+                                ref={fileInputRef}
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleFileUpload}
+                                className="hidden"
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="w-full"
+                                onClick={() => fileInputRef.current?.click()}
+                              >
+                                <Upload className="w-4 h-4 mr-2" />
+                                {t('events.uploadImage')}
+                              </Button>
+                            </div>
                           </div>
                         )}
 

@@ -79,14 +79,6 @@ const Index = () => {
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // PROACTIVE watermark with gradient (top left)
-    ctx.font = 'bold 36px system-ui';
-    const watermarkGradient = ctx.createLinearGradient(60, 80, 280, 80);
-    watermarkGradient.addColorStop(0, '#22c55e');
-    watermarkGradient.addColorStop(1, '#3b82f6');
-    ctx.fillStyle = watermarkGradient;
-    ctx.fillText('PROACTIVE', 60, 100);
-
     // "Did you know?" header - centered
     ctx.font = 'bold 48px system-ui';
     ctx.fillStyle = '#94a3b8';
@@ -130,12 +122,15 @@ const Index = () => {
       y += 50;
     }
 
-    // Bottom branding
-    ctx.font = 'bold 28px system-ui';
-    ctx.fillStyle = '#64748b';
-    const brandingText = 'proactive.health';
-    const brandingWidth = ctx.measureText(brandingText).width;
-    ctx.fillText(brandingText, (canvas.width - brandingWidth) / 2, 1800);
+    // Bottom branding - PROACTIVE logo with gradient
+    ctx.font = 'bold 48px system-ui';
+    const logoGradient = ctx.createLinearGradient(canvas.width / 2 - 150, 1750, canvas.width / 2 + 150, 1750);
+    logoGradient.addColorStop(0, '#22c55e');
+    logoGradient.addColorStop(1, '#3b82f6');
+    ctx.fillStyle = logoGradient;
+    const logoText = 'PROACTIVE';
+    const logoWidth = ctx.measureText(logoText).width;
+    ctx.fillText(logoText, (canvas.width - logoWidth) / 2, 1820);
 
     // Download the image
     const link = document.createElement('a');

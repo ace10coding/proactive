@@ -93,4 +93,68 @@ All colors MUST be HSL.
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-bold;
   }
+
+  /* GIF Optimization - Ensure smooth animation and proper frame display */
+  img[src*=".gif"] {
+    image-rendering: auto;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    contain: layout style paint;
+    will-change: transform;
+  }
+
+  /* Exercise card GIF container - force proper frame rendering */
+  .aspect-video {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .aspect-video img[src*=".gif"] {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    animation-timing-function: steps(1, end);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+  }
+
+  /* Fade in animation for images */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-in-out;
+  }
+
+  /* Prevent zoom on input focus */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    button,
+    a {
+      -webkit-user-select: text;
+      user-select: text;
+    }
+  }
 }
+
+

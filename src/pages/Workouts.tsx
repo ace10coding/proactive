@@ -34,7 +34,7 @@ const Workouts = () => {
       nameKey: "exercise.barbellFrontRaises.name",
       type: "Strength",
       equipment: "Barbell",
-      media: "/images/barbell-front-raises.gif",
+      media: "/images/exercises/barbell-front-raises.gif",
       howToKey: "exercise.barbellFrontRaises.howTo",
     },
     {
@@ -50,7 +50,7 @@ const Workouts = () => {
       nameKey: "exercise.barbellUprightRows.name",
       type: "Strength",
       equipment: "Barbell",
-      media: "/images/barbell-upright-rows.gif",
+      media: "/images/exercises/barbell-upright-rows.gif",
       howToKey: "exercise.barbellUprightRows.howTo",
     },
     {
