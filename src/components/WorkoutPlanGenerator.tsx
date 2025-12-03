@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, ArrowLeft } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type WorkoutPlan = {
   nickname: string;
@@ -24,8 +25,31 @@ type WorkoutPlan = {
   plan: any[];
 };
 
+// Platform exercises - only these will be used in generated plans
+const PLATFORM_EXERCISES = [
+  {
+    id: "barbell-front-raises",
+    nameKey: "exercise.barbellFrontRaises.name",
+    equipment: ["barbell", "garage", "full"],
+    focusAreas: ["Shoulder"],
+  },
+  {
+    id: "arnold-press",
+    nameKey: "exercise.arnoldPress.name",
+    equipment: ["dumbbells", "garage", "full"],
+    focusAreas: ["Shoulder"],
+  },
+  {
+    id: "barbell-upright-rows",
+    nameKey: "exercise.barbellUprightRows.name",
+    equipment: ["barbell", "garage", "full"],
+    focusAreas: ["Shoulder", "Traps"],
+  },
+];
+
 const WorkoutPlanGenerator = () => {
   const [step, setStep] = useState(0);
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     nickname: "",
     gender: "",
@@ -43,8 +67,7 @@ const WorkoutPlanGenerator = () => {
   const { toast } = useToast();
 
   const bodyParts = [
-    "Chest", "Triceps", "Lats", "Biceps", "Shoulder", 
-    "Abs", "Forearms", "Traps", "Glutes", "Quads", "Hamstring", "Calves"
+    "Shoulder", "Traps"
   ];
 
   const handleFocusAreaToggle = (area: string) => {
@@ -56,16 +79,70 @@ const WorkoutPlanGenerator = () => {
     }));
   };
 
+  const getAvailableExercises = (equipment: string, focusAreas: string[]) => {
+    return PLATFORM_EXERCISES.filter(exercise => {
+      const equipmentMatch = exercise.equipment.includes(equipment) || 
+                            (equipment === "garage" && (exercise.equipment.includes("barbell") || exercise.equipment.includes("dumbbells"))) ||
+                            (equipment === "full");
+      const focusMatch = focusAreas.length === 0 || 
+                        exercise.focusAreas.some(area => focusAreas.includes(area));
+      return equipmentMatch && focusMatch;
+    });
+  };
+
   const generatePlan = () => {
     const plan: any[] = [];
     const daysPerWeek = parseInt(formData.frequency);
     const weeksInMonth = 4;
+    
+    const availableExercises = getAvailableExercises(formData.equipment, formData.focusAreas);
 
-    // Generate workout plan based on user inputs
+    if (availableExercises.length === 0) {
+      toast({
+        title: "No exercises available",
+        description: "No exercises match your equipment and focus areas. Please adjust your selections.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Base rep ranges based on goal and experience
+    let reps = "10-12";
+    let sets = 3;
+    
+    if (formData.goal === "build") {
+      reps = formData.experience === "newbie" ? "8-10" : formData.experience === "advanced" ? "6-8" : "8-12";
+      sets = formData.experience === "advanced" ? 4 : 3;
+    } else if (formData.goal === "lose") {
+      reps = "12-15";
+      sets = 3;
+    } else {
+      reps = "10-12";
+      sets = 3;
+    }
+
+    // Generate workout plan using only platform exercises
     for (let week = 1; week <= weeksInMonth; week++) {
       for (let day = 1; day <= daysPerWeek; day++) {
-        const focusArea = formData.focusAreas[day % formData.focusAreas.length] || "Full Body";
-        const exercises = generateExercises(focusArea, formData.goal, formData.equipment, formData.experience);
+        const focusArea = formData.focusAreas[day % formData.focusAreas.length] || "Shoulder";
+        
+        // Get exercises for this focus area from platform exercises only
+        const dayExercises = availableExercises
+          .filter(ex => ex.focusAreas.includes(focusArea) || formData.focusAreas.length === 0)
+          .map(ex => ({
+            name: t(ex.nameKey),
+            sets,
+            reps,
+            rest: formData.goal === "lose" ? "30-45 sec" : "60-90 sec",
+          }));
+
+        // If no specific exercises for focus area, use all available
+        const exercises = dayExercises.length > 0 ? dayExercises : availableExercises.map(ex => ({
+          name: t(ex.nameKey),
+          sets,
+          reps,
+          rest: formData.goal === "lose" ? "30-45 sec" : "60-90 sec",
+        }));
         
         plan.push({
           week,
@@ -92,69 +169,6 @@ const WorkoutPlanGenerator = () => {
     });
 
     window.location.href = "/workouts?view=plan";
-  };
-
-  const generateExercises = (focusArea: string, goal: string, equipment: string, experience: string) => {
-    const exercises: any[] = [];
-    
-    // Base rep ranges based on goal and experience
-    let reps = "10-12";
-    let sets = 3;
-    
-    if (goal === "build") {
-      reps = experience === "newbie" ? "8-10" : experience === "advanced" ? "6-8" : "8-12";
-      sets = experience === "advanced" ? 4 : 3;
-    } else if (goal === "lose") {
-      reps = "12-15";
-      sets = 3;
-    } else {
-      reps = "10-12";
-      sets = 3;
-    }
-
-    // Sample exercise database based on equipment and focus area
-    const exerciseDb: any = {
-      none: {
-        Chest: ["Push-ups", "Wide Push-ups", "Diamond Push-ups", "Decline Push-ups"],
-        Triceps: ["Diamond Push-ups", "Tricep Dips", "Close Grip Push-ups"],
-        Biceps: ["Chin-ups", "Inverted Rows"],
-        Shoulder: ["Pike Push-ups", "Handstand Hold", "Plank to Down Dog"],
-        Abs: ["Crunches", "Plank", "Bicycle Crunches", "Leg Raises"],
-        Legs: ["Squats", "Lunges", "Jump Squats", "Wall Sit"],
-      },
-      dumbbells: {
-        Chest: ["Dumbbell Press", "Dumbbell Flyes", "Incline Dumbbell Press"],
-        Triceps: ["Overhead Tricep Extension", "Tricep Kickbacks"],
-        Biceps: ["Bicep Curls", "Hammer Curls", "Concentration Curls"],
-        Shoulder: ["Shoulder Press", "Lateral Raises", "Front Raises"],
-        Abs: ["Russian Twists with Dumbbell", "Weighted Crunches"],
-        Legs: ["Goblet Squats", "Dumbbell Lunges", "Romanian Deadlifts"],
-      },
-      full: {
-        Chest: ["Barbell Bench Press", "Cable Flyes", "Incline Press", "Chest Press Machine"],
-        Triceps: ["Cable Pushdowns", "Skull Crushers", "Close Grip Bench"],
-        Biceps: ["Barbell Curls", "Preacher Curls", "Cable Curls"],
-        Shoulder: ["Military Press", "Cable Lateral Raises", "Face Pulls"],
-        Abs: ["Cable Crunches", "Hanging Leg Raises", "Ab Wheel"],
-        Legs: ["Squats", "Leg Press", "Hamstring Curls", "Leg Extensions"],
-      },
-    };
-
-    const equipmentKey = equipment === "none" ? "none" : equipment === "dumbbells" ? "dumbbells" : "full";
-    const areaExercises = exerciseDb[equipmentKey][focusArea] || exerciseDb[equipmentKey].Chest;
-    
-    const numExercises = experience === "newbie" ? 3 : experience === "advanced" ? 5 : 4;
-    
-    for (let i = 0; i < numExercises && i < areaExercises.length; i++) {
-      exercises.push({
-        name: areaExercises[i],
-        sets,
-        reps,
-        rest: goal === "lose" ? "30-45 sec" : "60-90 sec",
-      });
-    }
-
-    return exercises;
   };
 
   const nextStep = () => {
@@ -323,7 +337,7 @@ const WorkoutPlanGenerator = () => {
 
               <div>
                 <Label>Which parts do you want to focus on?</Label>
-                <p className="text-sm text-muted-foreground mb-3">Select all that apply</p>
+                <p className="text-sm text-muted-foreground mb-3">Select all that apply (based on available exercises)</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {bodyParts.map((part) => (
                     <div key={part} className="flex items-center space-x-2">
@@ -385,9 +399,9 @@ const WorkoutPlanGenerator = () => {
                     <SelectValue placeholder="Select equipment" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">No equipment - Home workouts with bodyweight only</SelectItem>
-                    <SelectItem value="dumbbells">Dumbbells - Only exercises with Dumbbells and bodyweight</SelectItem>
-                    <SelectItem value="garage">Garage gym - Exercises with barbell, dumbbell and bodyweight</SelectItem>
+                    <SelectItem value="dumbbells">Dumbbells - Only exercises with Dumbbells</SelectItem>
+                    <SelectItem value="barbell">Barbell - Exercises with barbell</SelectItem>
+                    <SelectItem value="garage">Garage gym - Exercises with barbell and dumbbells</SelectItem>
                     <SelectItem value="full">Full gym - All exercises with machines, barbell and all</SelectItem>
                   </SelectContent>
                 </Select>

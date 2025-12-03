@@ -1,5 +1,5 @@
-import { ArrowRight, Heart, Target, Users, Mail } from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, Mail, Share2, Droplets, Moon } from "lucide-react";
+import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ const Index = () => {
   const [email, setEmail] = useState("");
   const { toast } = useToast();
   const { t } = useLanguage();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,11 +28,17 @@ const Index = () => {
   const posts = [
     {
       id: 1,
-      title: "Health Risks of Alcohol-Induced Dehydration",
-      excerpt: "Drinking alcohol makes you pee a lot more because it blocks a hormone called vasopressin. When that hormone is suppressed, your kidneys stop retaining water, so you lose fluids and important electrolytes quickly. That's why you wake up after a night of drinking feeling like a dried-out sponge.\n\nThat kind of dehydration isn't just uncomfortable; it can actually be rough on your body. It puts extra strain on your kidneys, throws your electrolytes out of balance (which can make your heart and muscles act weird), raises blood pressure, fogs up your thinking, dries out your skin, and in really bad cases can even lead to dangerously low blood volume (shock) or swelling in the brain.",
-      icon: Heart,
-      color: "text-primary",
-      link: "#subscribe",
+      titleKey: "didyouknow.hydration.title",
+      contentKey: "didyouknow.hydration.content",
+      icon: Droplets,
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      id: 2,
+      titleKey: "didyouknow.sleep.title",
+      contentKey: "didyouknow.sleep.content",
+      icon: Moon,
+      color: "from-purple-500 to-indigo-500",
     },
   ];
 
@@ -42,8 +49,8 @@ const Index = () => {
       link: "/events",
     },
     {
-      title: "Calculate BMI",
-      description: "Track your health metrics with our BMI calculator",
+      title: t('home.features.bmi.title'),
+      description: t('home.features.bmi.desc'),
       link: "/calculator",
     },
     {
@@ -53,8 +60,81 @@ const Index = () => {
     },
   ];
 
+  const generateShareImage = async (post: typeof posts[0]) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size for social media (1200x630 for optimal sharing)
+    canvas.width = 1200;
+    canvas.height = 630;
+
+    // Background gradient
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, '#1a1a2e');
+    gradient.addColorStop(1, '#16213e');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // PROACTIVE watermark with gradient (top left)
+    ctx.font = 'bold 28px system-ui';
+    const watermarkGradient = ctx.createLinearGradient(40, 40, 200, 40);
+    watermarkGradient.addColorStop(0, '#22c55e');
+    watermarkGradient.addColorStop(1, '#3b82f6');
+    ctx.fillStyle = watermarkGradient;
+    ctx.fillText('PROACTIVE', 40, 60);
+
+    // "Did you know?" header
+    ctx.font = 'bold 32px system-ui';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('Did you know?', 40, 180);
+
+    // Title
+    ctx.font = 'bold 48px system-ui';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(t(post.titleKey), 40, 250);
+
+    // Content - word wrap
+    ctx.font = '28px system-ui';
+    ctx.fillStyle = '#e2e8f0';
+    const content = t(post.contentKey);
+    const words = content.split(' ');
+    let line = '';
+    let y = 320;
+    const maxWidth = canvas.width - 80;
+
+    for (const word of words) {
+      const testLine = line + word + ' ';
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth) {
+        ctx.fillText(line, 40, y);
+        line = word + ' ';
+        y += 40;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line, 40, y);
+
+    // Download the image
+    const link = document.createElement('a');
+    link.download = `proactive-${post.id}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    toast({
+      title: "Image downloaded!",
+      description: "Share it on your favorite social media platform.",
+    });
+  };
+
   return (
     <div className="min-h-screen pt-16">
+      {/* Hidden canvas for generating share images */}
+      <canvas ref={canvasRef} className="hidden" />
+
       {/* Hero Section */}
       <section className="relative h-[600px] overflow-hidden">
         <div
@@ -118,7 +198,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Health Advocacy Posts */}
+      {/* Did You Know Posts */}
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
@@ -126,28 +206,35 @@ const Index = () => {
               {t('home.blog.title')}
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t('home.features.advocacy.desc')}
+              {t('home.blog.subtitle')}
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {posts.map((post) => (
-              <a key={post.id} href={post.link} className="block">
-                <Card className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1">
-                  <CardHeader>
-                    <div className={`w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                      <post.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <CardTitle className="text-2xl group-hover:text-primary transition-colors">
-                      {post.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-base leading-relaxed whitespace-pre-line">
-                      {post.excerpt}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              </a>
+              <Card key={post.id} className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                <CardHeader>
+                  <div className={`w-14 h-14 rounded-full bg-gradient-to-r ${post.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <post.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <CardTitle className="text-2xl group-hover:text-primary transition-colors">
+                    {t(post.titleKey)}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <CardDescription className="text-base leading-relaxed">
+                    {t(post.contentKey)}
+                  </CardDescription>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => generateShareImage(post)}
+                    className="gap-2"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    {t('didyouknow.share')}
+                  </Button>
+                </CardContent>
+              </Card>
             ))}
           </div>
           
@@ -189,10 +276,10 @@ const Index = () => {
       <section className="py-20 bg-gradient-hero">
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-4xl sm:text-5xl font-heading font-bold text-white mb-6">
-            Ready to Transform Your Health?
+            {t('home.cta.title')}
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Take the first step towards a healthier, more active lifestyle today.
+            {t('home.cta.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/calculator">
@@ -200,7 +287,7 @@ const Index = () => {
                 size="lg"
                 className="bg-white text-primary hover:bg-white/90 text-lg px-8"
               >
-                Check Your BMI
+                {t('home.cta.bmi')}
               </Button>
             </Link>
             <Link to="/workouts">
@@ -208,7 +295,7 @@ const Index = () => {
                 size="lg"
                 className="bg-secondary hover:bg-secondary/90 text-white text-lg px-8"
               >
-                View Workouts
+                {t('home.cta.workouts')}
               </Button>
             </Link>
           </div>

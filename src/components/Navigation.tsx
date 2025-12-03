@@ -14,7 +14,6 @@ const Navigation = () => {
     { to: "/events", label: t('nav.events') },
     { to: "/calculator", label: t('nav.calculator') },
     { to: "/workouts", label: t('nav.workouts') },
-    { to: "/health-assistant", label: t('nav.assistant') },
     { to: "/support", label: t('nav.support') },
   ];
 

@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Users, MessageCircle, Eye, Plus } from 'lucide-react';
+import { Users, MessageCircle, Eye, Plus, Pencil, Trash2, X, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -38,15 +38,25 @@ const SupportGroups = () => {
   const [newTopicOpen, setNewTopicOpen] = useState(false);
   const [replyContent, setReplyContent] = useState('');
   const [username, setUsername] = useState('');
+  const [editingTopic, setEditingTopic] = useState<string | null>(null);
+  const [editingPost, setEditingPost] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editContent, setEditContent] = useState('');
 
   const categories = [
-    'Mental Health',
-    'Nutrition & Diet',
-    'Exercise & Fitness',
-    'Chronic Conditions',
-    'General Wellness',
-    'Sleep & Rest',
+    { key: 'mental', value: 'Mental Health' },
+    { key: 'fitness', value: 'Exercise & Fitness' },
+    { key: 'chronic', value: 'Chronic Conditions' },
+    { key: 'wellness', value: 'General Wellness' },
+    { key: 'sleep', value: 'Sleep & Rest' },
   ];
+
+  const getCategoryLabel = (value: string) => {
+    const cat = categories.find(c => c.value === value);
+    if (cat) return t(`support.categories.${cat.key}`);
+    return value;
+  };
 
   useEffect(() => {
     loadTopics();
@@ -122,6 +132,71 @@ const SupportGroups = () => {
     }
   };
 
+  const deleteTopic = async (topicId: string) => {
+    // First delete all posts for this topic
+    await supabase.from('support_posts').delete().eq('topic_id', topicId);
+    
+    const { error } = await supabase.from('support_topics').delete().eq('id', topicId);
+    
+    if (!error) {
+      toast({ title: t('support.success'), description: t('support.deleted') });
+      if (selectedTopic?.id === topicId) {
+        setSelectedTopic(null);
+        setPosts([]);
+      }
+      loadTopics();
+    }
+  };
+
+  const deletePost = async (postId: string) => {
+    const { error } = await supabase.from('support_posts').delete().eq('id', postId);
+    
+    if (!error) {
+      toast({ title: t('support.success'), description: t('support.deleted') });
+      if (selectedTopic) loadPosts(selectedTopic.id);
+    }
+  };
+
+  const startEditTopic = (topic: Topic) => {
+    setEditingTopic(topic.id);
+    setEditTitle(topic.title);
+    setEditDescription(topic.description || '');
+  };
+
+  const saveEditTopic = async (topicId: string) => {
+    const { error } = await supabase
+      .from('support_topics')
+      .update({ title: editTitle, description: editDescription })
+      .eq('id', topicId);
+
+    if (!error) {
+      toast({ title: t('support.success'), description: t('support.updated') });
+      setEditingTopic(null);
+      loadTopics();
+      if (selectedTopic?.id === topicId) {
+        setSelectedTopic({ ...selectedTopic, title: editTitle, description: editDescription });
+      }
+    }
+  };
+
+  const startEditPost = (post: Post) => {
+    setEditingPost(post.id);
+    setEditContent(post.content);
+  };
+
+  const saveEditPost = async (postId: string) => {
+    const { error } = await supabase
+      .from('support_posts')
+      .update({ content: editContent })
+      .eq('id', postId);
+
+    if (!error) {
+      toast({ title: t('support.success'), description: t('support.updated') });
+      setEditingPost(null);
+      if (selectedTopic) loadPosts(selectedTopic.id);
+    }
+  };
+
   return (
     <div className="min-h-screen pt-20 pb-16 px-4">
       <div className="max-w-7xl mx-auto">
@@ -156,8 +231,8 @@ const SupportGroups = () => {
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((cat) => (
-                        <SelectItem key={cat} value={cat}>
-                          {cat}
+                        <SelectItem key={cat.value} value={cat.value}>
+                          {t(`support.categories.${cat.key}`)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -186,19 +261,53 @@ const SupportGroups = () => {
                         className={`cursor-pointer hover:bg-accent transition ${
                           selectedTopic?.id === topic.id ? 'border-primary' : ''
                         }`}
-                        onClick={() => setSelectedTopic(topic)}
                       >
                         <CardHeader className="p-4">
-                          <CardTitle className="text-sm">{topic.title}</CardTitle>
-                          <CardDescription className="text-xs">
-                            {topic.category}
-                          </CardDescription>
-                          <div className="flex gap-2 text-xs text-muted-foreground mt-2">
-                            <span className="flex items-center gap-1">
-                              <Eye className="w-3 h-3" />
-                              {topic.view_count}
-                            </span>
-                          </div>
+                          {editingTopic === topic.id ? (
+                            <div className="space-y-2">
+                              <Input
+                                value={editTitle}
+                                onChange={(e) => setEditTitle(e.target.value)}
+                                className="text-sm"
+                              />
+                              <Textarea
+                                value={editDescription}
+                                onChange={(e) => setEditDescription(e.target.value)}
+                                className="text-xs"
+                              />
+                              <div className="flex gap-2">
+                                <Button size="sm" onClick={() => saveEditTopic(topic.id)}>
+                                  <Check className="w-3 h-3" />
+                                </Button>
+                                <Button size="sm" variant="outline" onClick={() => setEditingTopic(null)}>
+                                  <X className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <div onClick={() => setSelectedTopic(topic)}>
+                                <CardTitle className="text-sm">{topic.title}</CardTitle>
+                                <CardDescription className="text-xs">
+                                  {getCategoryLabel(topic.category)}
+                                </CardDescription>
+                                <div className="flex gap-2 text-xs text-muted-foreground mt-2">
+                                  <span className="flex items-center gap-1">
+                                    <Eye className="w-3 h-3" />
+                                    {topic.view_count}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="flex gap-1 mt-2">
+                                <Button size="sm" variant="ghost" onClick={() => startEditTopic(topic)}>
+                                  <Pencil className="w-3 h-3" />
+                                </Button>
+                                <Button size="sm" variant="ghost" onClick={() => deleteTopic(topic.id)}>
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </>
+                          )}
                         </CardHeader>
                       </Card>
                     ))}
@@ -221,14 +330,45 @@ const SupportGroups = () => {
                       {posts.map((post) => (
                         <Card key={post.id}>
                           <CardHeader className="p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Users className="w-4 h-4" />
-                              <span className="text-sm font-medium">{post.username}</span>
-                              <span className="text-xs text-muted-foreground">
-                                {new Date(post.created_at).toLocaleDateString()}
-                              </span>
-                            </div>
-                            <p className="text-sm">{post.content}</p>
+                            {editingPost === post.id ? (
+                              <div className="space-y-2">
+                                <Textarea
+                                  value={editContent}
+                                  onChange={(e) => setEditContent(e.target.value)}
+                                />
+                                <div className="flex gap-2">
+                                  <Button size="sm" onClick={() => saveEditPost(post.id)}>
+                                    <Check className="w-3 h-3 mr-1" />
+                                    {t('support.save')}
+                                  </Button>
+                                  <Button size="sm" variant="outline" onClick={() => setEditingPost(null)}>
+                                    <X className="w-3 h-3 mr-1" />
+                                    {t('support.cancel')}
+                                  </Button>
+                                </div>
+                              </div>
+                            ) : (
+                              <>
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <Users className="w-4 h-4" />
+                                    <span className="text-sm font-medium">{post.username}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                      {new Date(post.created_at).toLocaleDateString()}
+                                    </span>
+                                  </div>
+                                  <div className="flex gap-1">
+                                    <Button size="sm" variant="ghost" onClick={() => startEditPost(post)}>
+                                      <Pencil className="w-3 h-3" />
+                                    </Button>
+                                    <Button size="sm" variant="ghost" onClick={() => deletePost(post.id)}>
+                                      <Trash2 className="w-3 h-3" />
+                                    </Button>
+                                  </div>
+                                </div>
+                                <p className="text-sm">{post.content}</p>
+                              </>
+                            )}
                           </CardHeader>
                         </Card>
                       ))}
