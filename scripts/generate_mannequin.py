@@ -1,0 +1,557 @@
+from PIL import Image, ImageDraw
+import os
+
+output_dir = "../public/images/exercises"
+os.makedirs(output_dir, exist_ok=True)
+
+def draw_mannequin(draw, joints, line_width=6, color="black"):
+    head_center = joints.get("head")
+    if head_center:
+        head_radius = 35
+        draw.ellipse(
+            [head_center[0] - head_radius, head_center[1] - head_radius,
+             head_center[0] + head_radius, head_center[1] + head_radius],
+            outline=color, width=line_width
+        )
+    
+    limb_connections = [
+        ("neck", "shoulder_left"),
+        ("neck", "shoulder_right"),
+        ("neck", "spine_mid"),
+        ("spine_mid", "hip"),
+        ("shoulder_left", "elbow_left"),
+        ("elbow_left", "wrist_left"),
+        ("shoulder_right", "elbow_right"),
+        ("elbow_right", "wrist_right"),
+        ("hip", "hip_left"),
+        ("hip", "hip_right"),
+        ("hip_left", "knee_left"),
+        ("knee_left", "ankle_left"),
+        ("hip_right", "knee_right"),
+        ("knee_right", "ankle_right"),
+    ]
+    
+    for start, end in limb_connections:
+        if start in joints and end in joints:
+            draw.line([joints[start], joints[end]], fill=color, width=line_width)
+    
+    if "hand_left" in joints and "wrist_left" in joints:
+        draw.line([joints["wrist_left"], joints["hand_left"]], fill=color, width=line_width)
+    if "hand_right" in joints and "wrist_right" in joints:
+        draw.line([joints["wrist_right"], joints["hand_right"]], fill=color, width=line_width)
+    if "foot_left" in joints and "ankle_left" in joints:
+        draw.line([joints["ankle_left"], joints["foot_left"]], fill=color, width=line_width)
+    if "foot_right" in joints and "ankle_right" in joints:
+        draw.line([joints["ankle_right"], joints["foot_right"]], fill=color, width=line_width)
+
+def create_frame(joints, filename, size=(550, 550)):
+    img = Image.new("RGBA", size, (255, 255, 255, 255))
+    draw = ImageDraw.Draw(img)
+    draw_mannequin(draw, joints)
+    img.save(filename)
+    print(f"Created: {filename}")
+
+push_up_down = {
+    "head": (275, 180),
+    "neck": (275, 210),
+    "shoulder_left": (240, 210),
+    "shoulder_right": (310, 210),
+    "spine_mid": (340, 230),
+    "hip": (420, 260),
+    "elbow_left": (200, 270),
+    "elbow_right": (350, 270),
+    "wrist_left": (180, 330),
+    "wrist_right": (380, 330),
+    "hand_left": (180, 350),
+    "hand_right": (380, 350),
+    "hip_left": (400, 280),
+    "hip_right": (440, 280),
+    "knee_left": (450, 320),
+    "knee_right": (490, 320),
+    "ankle_left": (480, 350),
+    "ankle_right": (520, 350),
+    "foot_left": (490, 360),
+    "foot_right": (530, 360),
+}
+
+push_up_up = {
+    "head": (200, 120),
+    "neck": (200, 150),
+    "shoulder_left": (165, 155),
+    "shoulder_right": (235, 155),
+    "spine_mid": (280, 170),
+    "hip": (380, 200),
+    "elbow_left": (165, 210),
+    "elbow_right": (235, 210),
+    "wrist_left": (165, 320),
+    "wrist_right": (235, 320),
+    "hand_left": (165, 340),
+    "hand_right": (235, 340),
+    "hip_left": (360, 220),
+    "hip_right": (400, 220),
+    "knee_left": (440, 280),
+    "knee_right": (480, 280),
+    "ankle_left": (500, 320),
+    "ankle_right": (520, 340),
+    "foot_left": (510, 330),
+    "foot_right": (530, 350),
+}
+
+diamond_push_up_down = {
+    "head": (275, 180),
+    "neck": (275, 210),
+    "shoulder_left": (240, 210),
+    "shoulder_right": (310, 210),
+    "spine_mid": (340, 230),
+    "hip": (420, 260),
+    "elbow_left": (220, 280),
+    "elbow_right": (330, 280),
+    "wrist_left": (265, 330),
+    "wrist_right": (285, 330),
+    "hand_left": (270, 350),
+    "hand_right": (280, 350),
+    "hip_left": (400, 280),
+    "hip_right": (440, 280),
+    "knee_left": (450, 320),
+    "knee_right": (490, 320),
+    "ankle_left": (480, 350),
+    "ankle_right": (520, 350),
+    "foot_left": (490, 360),
+    "foot_right": (530, 360),
+}
+
+diamond_push_up_up = {
+    "head": (200, 120),
+    "neck": (200, 150),
+    "shoulder_left": (165, 155),
+    "shoulder_right": (235, 155),
+    "spine_mid": (280, 170),
+    "hip": (380, 200),
+    "elbow_left": (180, 200),
+    "elbow_right": (220, 200),
+    "wrist_left": (195, 320),
+    "wrist_right": (205, 320),
+    "hand_left": (197, 340),
+    "hand_right": (203, 340),
+    "hip_left": (360, 220),
+    "hip_right": (400, 220),
+    "knee_left": (440, 280),
+    "knee_right": (480, 280),
+    "ankle_left": (500, 320),
+    "ankle_right": (520, 340),
+    "foot_left": (510, 330),
+    "foot_right": (530, 350),
+}
+
+wide_push_up_down = {
+    "head": (275, 180),
+    "neck": (275, 210),
+    "shoulder_left": (230, 210),
+    "shoulder_right": (320, 210),
+    "spine_mid": (340, 230),
+    "hip": (420, 260),
+    "elbow_left": (160, 270),
+    "elbow_right": (390, 270),
+    "wrist_left": (100, 330),
+    "wrist_right": (450, 330),
+    "hand_left": (90, 350),
+    "hand_right": (460, 350),
+    "hip_left": (400, 280),
+    "hip_right": (440, 280),
+    "knee_left": (450, 320),
+    "knee_right": (490, 320),
+    "ankle_left": (480, 350),
+    "ankle_right": (520, 350),
+    "foot_left": (490, 360),
+    "foot_right": (530, 360),
+}
+
+wide_push_up_up = {
+    "head": (200, 120),
+    "neck": (200, 150),
+    "shoulder_left": (155, 155),
+    "shoulder_right": (245, 155),
+    "spine_mid": (280, 170),
+    "hip": (380, 200),
+    "elbow_left": (100, 200),
+    "elbow_right": (300, 200),
+    "wrist_left": (80, 320),
+    "wrist_right": (320, 320),
+    "hand_left": (70, 340),
+    "hand_right": (330, 340),
+    "hip_left": (360, 220),
+    "hip_right": (400, 220),
+    "knee_left": (440, 280),
+    "knee_right": (480, 280),
+    "ankle_left": (500, 320),
+    "ankle_right": (520, 340),
+    "foot_left": (510, 330),
+    "foot_right": (530, 350),
+}
+
+decline_push_up_down = {
+    "head": (180, 220),
+    "neck": (180, 250),
+    "shoulder_left": (145, 250),
+    "shoulder_right": (215, 250),
+    "spine_mid": (250, 230),
+    "hip": (340, 200),
+    "elbow_left": (110, 310),
+    "elbow_right": (250, 310),
+    "wrist_left": (100, 380),
+    "wrist_right": (260, 380),
+    "hand_left": (100, 400),
+    "hand_right": (260, 400),
+    "hip_left": (330, 180),
+    "hip_right": (370, 180),
+    "knee_left": (410, 140),
+    "knee_right": (450, 140),
+    "ankle_left": (470, 100),
+    "ankle_right": (510, 100),
+    "foot_left": (480, 90),
+    "foot_right": (520, 90),
+}
+
+decline_push_up_up = {
+    "head": (120, 160),
+    "neck": (120, 190),
+    "shoulder_left": (85, 195),
+    "shoulder_right": (155, 195),
+    "spine_mid": (200, 170),
+    "hip": (320, 130),
+    "elbow_left": (85, 260),
+    "elbow_right": (155, 260),
+    "wrist_left": (85, 380),
+    "wrist_right": (155, 380),
+    "hand_left": (85, 400),
+    "hand_right": (155, 400),
+    "hip_left": (300, 120),
+    "hip_right": (340, 120),
+    "knee_left": (400, 90),
+    "knee_right": (440, 90),
+    "ankle_left": (470, 60),
+    "ankle_right": (510, 60),
+    "foot_left": (480, 50),
+    "foot_right": (520, 50),
+}
+
+incline_push_up_down = {
+    "head": (380, 120),
+    "neck": (380, 150),
+    "shoulder_left": (345, 155),
+    "shoulder_right": (415, 155),
+    "spine_mid": (320, 180),
+    "hip": (220, 230),
+    "elbow_left": (350, 90),
+    "elbow_right": (420, 90),
+    "wrist_left": (380, 50),
+    "wrist_right": (450, 50),
+    "hand_left": (380, 35),
+    "hand_right": (450, 35),
+    "hip_left": (200, 250),
+    "hip_right": (240, 250),
+    "knee_left": (140, 300),
+    "knee_right": (180, 300),
+    "ankle_left": (80, 350),
+    "ankle_right": (120, 350),
+    "foot_left": (60, 360),
+    "foot_right": (100, 360),
+}
+
+incline_push_up_up = {
+    "head": (430, 80),
+    "neck": (430, 110),
+    "shoulder_left": (395, 115),
+    "shoulder_right": (465, 115),
+    "spine_mid": (360, 150),
+    "hip": (240, 220),
+    "elbow_left": (395, 50),
+    "elbow_right": (465, 50),
+    "wrist_left": (395, 25),
+    "wrist_right": (465, 25),
+    "hand_left": (395, 10),
+    "hand_right": (465, 10),
+    "hip_left": (220, 240),
+    "hip_right": (260, 240),
+    "knee_left": (160, 300),
+    "knee_right": (200, 300),
+    "ankle_left": (100, 360),
+    "ankle_right": (140, 360),
+    "foot_left": (80, 370),
+    "foot_right": (120, 370),
+}
+
+plank_hold = {
+    "head": (130, 150),
+    "neck": (130, 180),
+    "shoulder_left": (95, 185),
+    "shoulder_right": (165, 185),
+    "spine_mid": (220, 200),
+    "hip": (340, 220),
+    "elbow_left": (95, 260),
+    "elbow_right": (165, 260),
+    "wrist_left": (95, 350),
+    "wrist_right": (165, 350),
+    "hand_left": (95, 370),
+    "hand_right": (165, 370),
+    "hip_left": (320, 240),
+    "hip_right": (360, 240),
+    "knee_left": (400, 280),
+    "knee_right": (440, 280),
+    "ankle_left": (470, 340),
+    "ankle_right": (510, 340),
+    "foot_left": (480, 355),
+    "foot_right": (520, 355),
+}
+
+mountain_climber_1 = {
+    "head": (130, 130),
+    "neck": (130, 160),
+    "shoulder_left": (95, 165),
+    "shoulder_right": (165, 165),
+    "spine_mid": (210, 190),
+    "hip": (310, 220),
+    "elbow_left": (95, 230),
+    "elbow_right": (165, 230),
+    "wrist_left": (95, 340),
+    "wrist_right": (165, 340),
+    "hand_left": (95, 360),
+    "hand_right": (165, 360),
+    "hip_left": (290, 230),
+    "hip_right": (330, 240),
+    "knee_left": (220, 280),
+    "knee_right": (420, 290),
+    "ankle_left": (200, 350),
+    "ankle_right": (490, 340),
+    "foot_left": (190, 365),
+    "foot_right": (500, 355),
+}
+
+mountain_climber_2 = {
+    "head": (130, 130),
+    "neck": (130, 160),
+    "shoulder_left": (95, 165),
+    "shoulder_right": (165, 165),
+    "spine_mid": (210, 190),
+    "hip": (310, 220),
+    "elbow_left": (95, 230),
+    "elbow_right": (165, 230),
+    "wrist_left": (95, 340),
+    "wrist_right": (165, 340),
+    "hand_left": (95, 360),
+    "hand_right": (165, 360),
+    "hip_left": (290, 240),
+    "hip_right": (330, 230),
+    "knee_left": (420, 290),
+    "knee_right": (220, 280),
+    "ankle_left": (490, 340),
+    "ankle_right": (200, 350),
+    "foot_left": (500, 355),
+    "foot_right": (190, 365),
+}
+
+burpee_1 = {
+    "head": (275, 100),
+    "neck": (275, 130),
+    "shoulder_left": (245, 135),
+    "shoulder_right": (305, 135),
+    "spine_mid": (275, 180),
+    "hip": (275, 240),
+    "elbow_left": (210, 170),
+    "elbow_right": (340, 170),
+    "wrist_left": (180, 120),
+    "wrist_right": (370, 120),
+    "hand_left": (175, 100),
+    "hand_right": (375, 100),
+    "hip_left": (255, 250),
+    "hip_right": (295, 250),
+    "knee_left": (255, 320),
+    "knee_right": (295, 320),
+    "ankle_left": (255, 400),
+    "ankle_right": (295, 400),
+    "foot_left": (255, 420),
+    "foot_right": (295, 420),
+}
+
+burpee_2 = {
+    "head": (130, 130),
+    "neck": (130, 160),
+    "shoulder_left": (95, 165),
+    "shoulder_right": (165, 165),
+    "spine_mid": (210, 190),
+    "hip": (310, 220),
+    "elbow_left": (95, 230),
+    "elbow_right": (165, 230),
+    "wrist_left": (95, 340),
+    "wrist_right": (165, 340),
+    "hand_left": (95, 360),
+    "hand_right": (165, 360),
+    "hip_left": (290, 240),
+    "hip_right": (330, 240),
+    "knee_left": (380, 290),
+    "knee_right": (420, 290),
+    "ankle_left": (450, 340),
+    "ankle_right": (490, 340),
+    "foot_left": (460, 355),
+    "foot_right": (500, 355),
+}
+
+jumping_jack_1 = {
+    "head": (275, 80),
+    "neck": (275, 110),
+    "shoulder_left": (245, 115),
+    "shoulder_right": (305, 115),
+    "spine_mid": (275, 170),
+    "hip": (275, 240),
+    "elbow_left": (245, 145),
+    "elbow_right": (305, 145),
+    "wrist_left": (245, 185),
+    "wrist_right": (305, 185),
+    "hand_left": (245, 200),
+    "hand_right": (305, 200),
+    "hip_left": (260, 250),
+    "hip_right": (290, 250),
+    "knee_left": (260, 330),
+    "knee_right": (290, 330),
+    "ankle_left": (260, 410),
+    "ankle_right": (290, 410),
+    "foot_left": (260, 425),
+    "foot_right": (290, 425),
+}
+
+jumping_jack_2 = {
+    "head": (275, 80),
+    "neck": (275, 110),
+    "shoulder_left": (245, 115),
+    "shoulder_right": (305, 115),
+    "spine_mid": (275, 170),
+    "hip": (275, 240),
+    "elbow_left": (180, 100),
+    "elbow_right": (370, 100),
+    "wrist_left": (130, 60),
+    "wrist_right": (420, 60),
+    "hand_left": (120, 45),
+    "hand_right": (430, 45),
+    "hip_left": (240, 250),
+    "hip_right": (310, 250),
+    "knee_left": (190, 330),
+    "knee_right": (360, 330),
+    "ankle_left": (150, 410),
+    "ankle_right": (400, 410),
+    "foot_left": (140, 425),
+    "foot_right": (410, 425),
+}
+
+squat_jump_1 = {
+    "head": (275, 80),
+    "neck": (275, 110),
+    "shoulder_left": (245, 115),
+    "shoulder_right": (305, 115),
+    "spine_mid": (275, 170),
+    "hip": (275, 240),
+    "elbow_left": (220, 150),
+    "elbow_right": (330, 150),
+    "wrist_left": (200, 190),
+    "wrist_right": (350, 190),
+    "hand_left": (195, 205),
+    "hand_right": (355, 205),
+    "hip_left": (255, 250),
+    "hip_right": (295, 250),
+    "knee_left": (255, 330),
+    "knee_right": (295, 330),
+    "ankle_left": (255, 410),
+    "ankle_right": (295, 410),
+    "foot_left": (255, 425),
+    "foot_right": (295, 425),
+}
+
+squat_jump_2 = {
+    "head": (275, 130),
+    "neck": (275, 160),
+    "shoulder_left": (240, 165),
+    "shoulder_right": (310, 165),
+    "spine_mid": (275, 210),
+    "hip": (275, 260),
+    "elbow_left": (200, 200),
+    "elbow_right": (350, 200),
+    "wrist_left": (180, 250),
+    "wrist_right": (370, 250),
+    "hand_left": (175, 265),
+    "hand_right": (375, 265),
+    "hip_left": (240, 275),
+    "hip_right": (310, 275),
+    "knee_left": (200, 340),
+    "knee_right": (350, 340),
+    "ankle_left": (200, 410),
+    "ankle_right": (350, 410),
+    "foot_left": (195, 425),
+    "foot_right": (355, 425),
+}
+
+high_knees_1 = {
+    "head": (275, 80),
+    "neck": (275, 110),
+    "shoulder_left": (245, 115),
+    "shoulder_right": (305, 115),
+    "spine_mid": (275, 170),
+    "hip": (275, 240),
+    "elbow_left": (215, 170),
+    "elbow_right": (335, 170),
+    "wrist_left": (200, 220),
+    "wrist_right": (350, 220),
+    "hand_left": (195, 235),
+    "hand_right": (355, 235),
+    "hip_left": (255, 250),
+    "hip_right": (295, 250),
+    "knee_left": (240, 180),
+    "knee_right": (295, 330),
+    "ankle_left": (230, 240),
+    "ankle_right": (295, 410),
+    "foot_left": (220, 255),
+    "foot_right": (295, 425),
+}
+
+high_knees_2 = {
+    "head": (275, 80),
+    "neck": (275, 110),
+    "shoulder_left": (245, 115),
+    "shoulder_right": (305, 115),
+    "spine_mid": (275, 170),
+    "hip": (275, 240),
+    "elbow_left": (215, 170),
+    "elbow_right": (335, 170),
+    "wrist_left": (200, 220),
+    "wrist_right": (350, 220),
+    "hand_left": (195, 235),
+    "hand_right": (355, 235),
+    "hip_left": (255, 250),
+    "hip_right": (295, 250),
+    "knee_left": (255, 330),
+    "knee_right": (310, 180),
+    "ankle_left": (255, 410),
+    "ankle_right": (320, 240),
+    "foot_left": (255, 425),
+    "foot_right": (330, 255),
+}
+
+exercises = [
+    ("push-up", push_up_up, push_up_down),
+    ("diamond-push-up", diamond_push_up_up, diamond_push_up_down),
+    ("wide-push-up", wide_push_up_up, wide_push_up_down),
+    ("decline-push-up", decline_push_up_up, decline_push_up_down),
+    ("incline-push-up", incline_push_up_up, incline_push_up_down),
+    ("plank", plank_hold, plank_hold),
+    ("mountain-climber", mountain_climber_2, mountain_climber_1),
+    ("burpee", burpee_2, burpee_1),
+    ("jumping-jack", jumping_jack_2, jumping_jack_1),
+    ("squat-jump", squat_jump_2, squat_jump_1),
+    ("high-knees", high_knees_2, high_knees_1),
+]
+
+for name, pos1, pos2 in exercises:
+    frame1_path = f"{output_dir}/{name}-1.png"
+    frame2_path = f"{output_dir}/{name}-2.png"
+    create_frame(pos1, frame1_path)
+    create_frame(pos2, frame2_path)
+
+print("\nAll frames created! Now creating GIFs...")

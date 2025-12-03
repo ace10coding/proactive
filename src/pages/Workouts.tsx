@@ -1,101 +1,764 @@
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import WorkoutPlanGenerator from "@/components/WorkoutPlanGenerator";
+import WorkoutPlanView from "@/components/WorkoutPlanView";
+import ExerciseAnimation from "@/components/ExerciseAnimation";
+
+interface Exercise {
+  id: number;
+  nameKey: string;
+  type: string;
+  equipment: string;
+  media?: string;
+  image1?: string;
+  image2?: string;
+  howToKey: string;
+}
 
 const Workouts = () => {
+  const { t } = useLanguage();
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedEquipment, setSelectedEquipment] = useState<string>("all");
+  const [view, setView] = useState<"exercises" | "generator" | "plan">("exercises");
+  const [fullscreenExercise, setFullscreenExercise] = useState<{ exercise: Exercise; title: string } | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get("view");
+    const hasPlan = localStorage.getItem("workoutPlan");
+    
+    if (viewParam === "plan" && hasPlan) {
+      setView("plan");
+    } else if (viewParam === "generator") {
+      setView("generator");
+    }
+  }, []);
 
   const exercises = [
     {
       id: 1,
-      name: "Arnold Press",
+      nameKey: "exercise.barbellFrontRaises.name",
       type: "Strength",
-      equipment: "Dumbbells",
-      media: "/images/exercises/arnold-press.gif",
-      mediaType: "gif",
-      howTo: "Stand with feet shoulder-width apart, holding dumbbells at shoulder height with palms facing you. Press the dumbbells overhead while rotating your palms outward. Lower back to the starting position, rotating palms back to face you. This movement works shoulders, triceps, and chest.",
+      equipment: "Barbell",
+      media: "/images/barbell-front-raises.gif",
+      howToKey: "exercise.barbellFrontRaises.howTo",
     },
     {
       id: 2,
-      name: "Back Extension on Stability Ball",
+      nameKey: "exercise.arnoldPress.name",
       type: "Strength",
-      equipment: "Stability Ball",
-      media: "/images/exercises/back-extension-stability-ball.gif",
-      mediaType: "gif",
-      howTo: "Lie face down on a stability ball with your hips on the ball and feet anchored against a wall or floor. Place hands behind your head. Lower your upper body towards the floor, then lift up by engaging your lower back muscles. Keep movements controlled and avoid hyperextending.",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/arnold-press-1.png",
+      image2: "/images/exercises/arnold-press-2.png",
+      howToKey: "exercise.arnoldPress.howTo",
     },
     {
       id: 3,
-      name: "Barbell Shrugs",
+      nameKey: "exercise.barbellUprightRows.name",
       type: "Strength",
       equipment: "Barbell",
-      media: "/images/exercises/barbell-shrugs.gif",
-      mediaType: "gif",
-      howTo: "Stand with feet shoulder-width apart, holding a barbell with an overhand grip in front of your thighs. Keep arms straight and raise your shoulders up towards your ears as high as possible. Hold briefly at the top, then lower slowly. Keep your core tight and avoid rolling shoulders.",
+      media: "/images/barbell-upright-rows.gif",
+      howToKey: "exercise.barbellUprightRows.howTo",
     },
     {
       id: 4,
-      name: "Bench Dips",
+      nameKey: "exercise.backExtension.name",
       type: "Strength",
-      equipment: "Bench",
-      media: "/images/exercises/bench-dips.gif",
-      mediaType: "gif",
-      howTo: "Place your hands on a bench behind you with fingers facing forward. Extend your legs out in front. Lower your body by bending your elbows until upper arms are parallel to the floor. Push back up to the starting position. Keep your back close to the bench throughout.",
+      equipment: "StabilityBall",
+      image1: "/images/exercises/back-extension-stability-ball-1.png",
+      image2: "/images/exercises/back-extension-stability-ball-2.png",
+      howToKey: "exercise.backExtension.howTo",
     },
     {
       id: 5,
-      name: "Bench Press",
+      nameKey: "exercise.barbellShrugs.name",
       type: "Strength",
       equipment: "Barbell",
-      media: "/images/exercises/bench-press.gif",
-      mediaType: "gif",
-      howTo: "Lie on a flat bench with feet flat on the floor. Grip the barbell slightly wider than shoulder-width. Lower the bar slowly to your mid-chest, pause briefly, then press back up to the starting position. Keep your core tight and maintain a slight arch in your lower back.",
+      image1: "/images/exercises/barbell-shrugs-1.png",
+      image2: "/images/exercises/barbell-shrugs-2.png",
+      howToKey: "exercise.barbellShrugs.howTo",
     },
     {
       id: 6,
-      name: "Bent Arm Pullover",
+      nameKey: "exercise.benchDips.name",
       type: "Strength",
-      equipment: "Barbell",
-      media: "/images/exercises/bent-arm-pullover.gif",
-      mediaType: "gif",
-      howTo: "Lie on a bench with only your upper back supported. Hold a barbell with arms bent at 90 degrees. Lower the weight behind your head in an arc, feeling a stretch in your lats. Pull the weight back to the starting position using your chest and lats.",
+      equipment: "Bench",
+      image1: "/images/exercises/bench-dips-1.png",
+      image2: "/images/exercises/bench-dips-2.png",
+      howToKey: "exercise.benchDips.howTo",
     },
     {
       id: 7,
-      name: "Bent Knee Hip Raise",
+      nameKey: "exercise.benchPress.name",
       type: "Strength",
-      equipment: "Body Weight",
-      media: "/images/exercises/bent-knee-hip-raise.gif",
-      mediaType: "gif",
-      howTo: "Lie on your back with arms at your sides and knees bent at 90 degrees. Lift your hips off the ground by contracting your abs and bringing your knees towards your chest. Lower back down with control. Focus on using your lower abs, not momentum.",
+      equipment: "Barbell",
+      image1: "/images/exercises/bench-press-1.png",
+      image2: "/images/exercises/bench-press-2.png",
+      howToKey: "exercise.benchPress.howTo",
     },
     {
       id: 8,
-      name: "Bicep Curls (Barbell)",
+      nameKey: "exercise.bentArmPullover.name",
       type: "Strength",
       equipment: "Barbell",
-      media: "/images/exercises/bicep-curls-barbell.gif",
-      mediaType: "gif",
-      howTo: "Stand with feet shoulder-width apart, holding a barbell with an underhand grip. Keep elbows close to your sides. Curl the bar up towards your shoulders, squeezing your biceps at the top. Lower slowly back to the starting position. Avoid swinging or using momentum.",
+      image1: "/images/exercises/bent-arm-pullover-1.png",
+      image2: "/images/exercises/bent-arm-pullover-2.png",
+      howToKey: "exercise.bentArmPullover.howTo",
     },
     {
       id: 9,
-      name: "Hammer Curl",
+      nameKey: "exercise.bentKneeHipRaise.name",
       type: "Strength",
-      equipment: "Dumbbells",
-      media: "/images/exercises/hammer-curl.gif",
-      mediaType: "gif",
-      howTo: "Stand with feet hip-width apart, holding dumbbells at your sides with palms facing inward (neutral grip). Curl the weights up towards your shoulders, keeping the neutral grip throughout. Lower slowly and repeat. This targets both the biceps and forearms.",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/bent-knee-hip-raise-1.png",
+      image2: "/images/exercises/bent-knee-hip-raise-2.png",
+      howToKey: "exercise.bentKneeHipRaise.howTo",
     },
     {
       id: 10,
-      name: "Biceps Curl (Dumbbell)",
+      nameKey: "exercise.bicepCurlsBarbell.name",
+      type: "Strength",
+      equipment: "Barbell",
+      image1: "/images/exercises/bicep-curls-barbell-1.png",
+      image2: "/images/exercises/bicep-curls-barbell-2.png",
+      howToKey: "exercise.bicepCurlsBarbell.howTo",
+    },
+    {
+      id: 11,
+      nameKey: "exercise.hammerCurl.name",
       type: "Strength",
       equipment: "Dumbbells",
-      media: "/images/exercises/biceps-curl-dumbbell.gif",
-      mediaType: "gif",
-      howTo: "Stand holding dumbbells at your sides with palms facing forward. Curl both weights up towards your shoulders while keeping elbows stationary. Squeeze at the top, then lower under control. You can alternate arms or curl both simultaneously.",
+      image1: "/images/exercises/hammer-curl-1.png",
+      image2: "/images/exercises/hammer-curl-2.png",
+      howToKey: "exercise.hammerCurl.howTo",
+    },
+    {
+      id: 12,
+      nameKey: "exercise.bicepsCurlDumbbell.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/biceps-curl-dumbbell-1.png",
+      image2: "/images/exercises/biceps-curl-dumbbell-2.png",
+      howToKey: "exercise.bicepsCurlDumbbell.howTo",
+    },
+    {
+      id: 13,
+      nameKey: "exercise.dumbbellFlys.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/dumbbell-flys-1.png",
+      image2: "/images/exercises/dumbbell-flys-2.png",
+      howToKey: "exercise.dumbbellFlys.howTo",
+    },
+    {
+      id: 14,
+      nameKey: "exercise.dumbbellFrontRaises.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/dumbbell-front-raises-1.png",
+      image2: "/images/exercises/dumbbell-front-raises-2.png",
+      howToKey: "exercise.dumbbellFrontRaises.howTo",
+    },
+    {
+      id: 15,
+      nameKey: "exercise.bicepsCurlReverse.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/biceps-curl-reverse-1.png",
+      image2: "/images/exercises/biceps-curl-reverse-2.png",
+      howToKey: "exercise.bicepsCurlReverse.howTo",
+    },
+    {
+      id: 16,
+      nameKey: "exercise.bridge.name",
+      type: "Strength",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/bridge-1.png",
+      image2: "/images/exercises/bridge-2.png",
+      howToKey: "exercise.bridge.howTo",
+    },
+    {
+      id: 17,
+      nameKey: "exercise.concentrationCurls.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/concentration-curls-1.png",
+      image2: "/images/exercises/concentration-curls-2.png",
+      howToKey: "exercise.concentrationCurls.howTo",
+    },
+    {
+      id: 18,
+      nameKey: "exercise.crossBodyCrunch.name",
+      type: "Strength",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/cross-body-crunch-1.png",
+      image2: "/images/exercises/cross-body-crunch-2.png",
+      howToKey: "exercise.crossBodyCrunch.howTo",
+    },
+    {
+      id: 19,
+      nameKey: "exercise.crunches.name",
+      type: "Strength",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/crunches-1.png",
+      image2: "/images/exercises/crunches-2.png",
+      howToKey: "exercise.crunches.howTo",
+    },
+    {
+      id: 20,
+      nameKey: "exercise.crunchesWithStabilityBall.name",
+      type: "Strength",
+      equipment: "StabilityBall",
+      image1: "/images/exercises/crunches-with-stability-ball-1.png",
+      image2: "/images/exercises/crunches-with-stability-ball-2.png",
+      howToKey: "exercise.crunchesWithStabilityBall.howTo",
+    },
+    {
+      id: 21,
+      nameKey: "exercise.declineCrunch.name",
+      type: "Strength",
+      equipment: "Bench",
+      image1: "/images/exercises/decline-crunch-1.png",
+      image2: "/images/exercises/decline-crunch-2.png",
+      howToKey: "exercise.declineCrunch.howTo",
+    },
+    {
+      id: 22,
+      nameKey: "exercise.dumbbellDeclineFlys.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/dumbbell-decline-flys-1.png",
+      image2: "/images/exercises/dumbbell-decline-flys-2.png",
+      howToKey: "exercise.dumbbellDeclineFlys.howTo",
+    },
+    {
+      id: 23,
+      nameKey: "exercise.kneelingTricepsExtension.name",
+      type: "Strength",
+      equipment: "Cable",
+      image1: "/images/exercises/kneeling-triceps-extension-1.png",
+      image2: "/images/exercises/kneeling-triceps-extension-2.png",
+      howToKey: "exercise.kneelingTricepsExtension.howTo",
+    },
+    {
+      id: 24,
+      nameKey: "exercise.dumbbellFrontRaisesAlt.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/dumbbell-front-raises-alt-1.png",
+      image2: "/images/exercises/dumbbell-front-raises-alt-2.png",
+      howToKey: "exercise.dumbbellFrontRaisesAlt.howTo",
+    },
+    {
+      id: 25,
+      nameKey: "exercise.dumbbellLateralRaises.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/dumbbell-lateral-raises-1.png",
+      image2: "/images/exercises/dumbbell-lateral-raises-2.png",
+      howToKey: "exercise.dumbbellLateralRaises.howTo",
+    },
+    {
+      id: 26,
+      nameKey: "exercise.exerciseBallPullIn.name",
+      type: "Strength",
+      equipment: "StabilityBall",
+      image1: "/images/exercises/exercise-ball-pull-in-1.png",
+      image2: "/images/exercises/exercise-ball-pull-in-2.png",
+      howToKey: "exercise.exerciseBallPullIn.howTo",
+    },
+    {
+      id: 27,
+      nameKey: "exercise.girondaSternumChins.name",
+      type: "Strength",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/gironda-sternum-chins-1.png",
+      image2: "/images/exercises/gironda-sternum-chins-2.png",
+      howToKey: "exercise.girondaSternumChins.howTo",
+    },
+    {
+      id: 28,
+      nameKey: "exercise.hammerCurlsRope.name",
+      type: "Strength",
+      equipment: "Cable",
+      image1: "/images/exercises/hammer-curls-rope-1.png",
+      image2: "/images/exercises/hammer-curls-rope-2.png",
+      howToKey: "exercise.hammerCurlsRope.howTo",
+    },
+    {
+      id: 29,
+      nameKey: "exercise.highCableCurls.name",
+      type: "Strength",
+      equipment: "Cable",
+      image1: "/images/exercises/high-cable-curls-1.png",
+      image2: "/images/exercises/high-cable-curls-2.png",
+      howToKey: "exercise.highCableCurls.howTo",
+    },
+    {
+      id: 30,
+      nameKey: "exercise.hyperextensions.name",
+      type: "Strength",
+      equipment: "Bench",
+      image1: "/images/exercises/hyperextensions-1.png",
+      image2: "/images/exercises/hyperextensions-2.png",
+      howToKey: "exercise.hyperextensions.howTo",
+    },
+    {
+      id: 31,
+      nameKey: "exercise.inclineTricepsExtensions.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/incline-triceps-extensions-1.png",
+      image2: "/images/exercises/incline-triceps-extensions-2.png",
+      howToKey: "exercise.inclineTricepsExtensions.howTo",
+    },
+    {
+      id: 32,
+      nameKey: "exercise.legPress.name",
+      type: "Strength",
+      equipment: "Machine",
+      image1: "/images/exercises/leg-press-1.png",
+      image2: "/images/exercises/leg-press-2.png",
+      howToKey: "exercise.legPress.howTo",
+    },
+    {
+      id: 33,
+      nameKey: "exercise.legRaises.name",
+      type: "Strength",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/leg-raises-1.png",
+      image2: "/images/exercises/leg-raises-2.png",
+      howToKey: "exercise.legRaises.howTo",
+    },
+    {
+      id: 34,
+      nameKey: "exercise.lowTricepsExtension.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/low-triceps-extension-1.png",
+      image2: "/images/exercises/low-triceps-extension-2.png",
+      howToKey: "exercise.lowTricepsExtension.howTo",
+    },
+    {
+      id: 35,
+      nameKey: "exercise.lungesBarbell.name",
+      type: "Strength",
+      equipment: "Barbell",
+      image1: "/images/exercises/lunges-barbell-1.png",
+      image2: "/images/exercises/lunges-barbell-2.png",
+      howToKey: "exercise.lungesBarbell.howTo",
+    },
+    {
+      id: 36,
+      nameKey: "exercise.lungesDumbbell.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/lunges-dumbbell-1.png",
+      image2: "/images/exercises/lunges-dumbbell-2.png",
+      howToKey: "exercise.lungesDumbbell.howTo",
+    },
+    {
+      id: 37,
+      nameKey: "exercise.lyingCloseGripTricepsPress.name",
+      type: "Strength",
+      equipment: "Barbell",
+      image1: "/images/exercises/lying-close-grip-triceps-press-1.png",
+      image2: "/images/exercises/lying-close-grip-triceps-press-2.png",
+      howToKey: "exercise.lyingCloseGripTricepsPress.howTo",
+    },
+    {
+      id: 38,
+      nameKey: "exercise.lyingOneArmRearLateralRaise.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/lying-one-arm-rear-lateral-raise-1.png",
+      image2: "/images/exercises/lying-one-arm-rear-lateral-raise-2.png",
+      howToKey: "exercise.lyingOneArmRearLateralRaise.howTo",
+    },
+    {
+      id: 39,
+      nameKey: "exercise.lyingRearLateralRaise.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/lying-rear-lateral-raise-1.png",
+      image2: "/images/exercises/lying-rear-lateral-raise-2.png",
+      howToKey: "exercise.lyingRearLateralRaise.howTo",
+    },
+    {
+      id: 40,
+      nameKey: "exercise.oneArmShoulderPress.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/one-arm-shoulder-press-1.png",
+      image2: "/images/exercises/one-arm-shoulder-press-2.png",
+      howToKey: "exercise.oneArmShoulderPress.howTo",
+    },
+    {
+      id: 41,
+      nameKey: "exercise.oneArmTricepsExtension.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/one-arm-triceps-extension-1.png",
+      image2: "/images/exercises/one-arm-triceps-extension-2.png",
+      howToKey: "exercise.oneArmTricepsExtension.howTo",
+    },
+    {
+      id: 42,
+      nameKey: "exercise.oneArmUprightRow.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/one-arm-upright-row-1.png",
+      image2: "/images/exercises/one-arm-upright-row-2.png",
+      howToKey: "exercise.oneArmUprightRow.howTo",
+    },
+    {
+      id: 43,
+      nameKey: "exercise.lyingTricepsExtensionAcrossFace.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/lying-triceps-extension-across-face-1.png",
+      image2: "/images/exercises/lying-triceps-extension-across-face-2.png",
+      howToKey: "exercise.lyingTricepsExtensionAcrossFace.howTo",
+    },
+    {
+      id: 44,
+      nameKey: "exercise.medicineBallBicepsCurl.name",
+      type: "Strength",
+      equipment: "StabilityBall",
+      image1: "/images/exercises/medicine-ball-biceps-curl-1.png",
+      image2: "/images/exercises/medicine-ball-biceps-curl-2.png",
+      howToKey: "exercise.medicineBallBicepsCurl.howTo",
+    },
+    {
+      id: 45,
+      nameKey: "exercise.narrowGripBenchPress.name",
+      type: "Strength",
+      equipment: "Barbell",
+      image1: "/images/exercises/narrow-grip-bench-press-1.png",
+      image2: "/images/exercises/narrow-grip-bench-press-2.png",
+      howToKey: "exercise.narrowGripBenchPress.howTo",
+    },
+    {
+      id: 46,
+      nameKey: "exercise.oneArmBenchPress.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/one-arm-bench-press-1.png",
+      image2: "/images/exercises/one-arm-bench-press-2.png",
+      howToKey: "exercise.oneArmBenchPress.howTo",
+    },
+    {
+      id: 47,
+      nameKey: "exercise.oneArmBicepConcentrationStabilityBall.name",
+      type: "Strength",
+      equipment: "StabilityBall",
+      image1: "/images/exercises/one-arm-bicep-concentration-stability-ball-1.png",
+      image2: "/images/exercises/one-arm-bicep-concentration-stability-ball-2.png",
+      howToKey: "exercise.oneArmBicepConcentrationStabilityBall.howTo",
+    },
+    {
+      id: 48,
+      nameKey: "exercise.oneArmPreacherCurl.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/one-arm-preacher-curl-1.png",
+      image2: "/images/exercises/one-arm-preacher-curl-2.png",
+      howToKey: "exercise.oneArmPreacherCurl.howTo",
+    },
+    {
+      id: 49,
+      nameKey: "exercise.spiderCurl.name",
+      type: "Strength",
+      equipment: "Barbell",
+      image1: "/images/exercises/spider-curl-1.png",
+      image2: "/images/exercises/spider-curl-2.png",
+      howToKey: "exercise.spiderCurl.howTo",
+    },
+    {
+      id: 50,
+      nameKey: "exercise.preacherCurlBarbell.name",
+      type: "Strength",
+      equipment: "Barbell",
+      image1: "/images/exercises/preacher-curl-barbell-1.png",
+      image2: "/images/exercises/preacher-curl-barbell-2.png",
+      howToKey: "exercise.preacherCurlBarbell.howTo",
+    },
+    {
+      id: 51,
+      nameKey: "exercise.pulloverStabilityBall.name",
+      type: "Strength",
+      equipment: "StabilityBall",
+      image1: "/images/exercises/pullover-stability-ball-1.png",
+      image2: "/images/exercises/pullover-stability-ball-2.png",
+      howToKey: "exercise.pulloverStabilityBall.howTo",
+    },
+    {
+      id: 52,
+      nameKey: "exercise.pushUpFeetOnBall.name",
+      type: "Strength",
+      equipment: "StabilityBall",
+      image1: "/images/exercises/push-up-feet-on-ball-1.png",
+      image2: "/images/exercises/push-up-feet-on-ball-2.png",
+      howToKey: "exercise.pushUpFeetOnBall.howTo",
+    },
+    {
+      id: 53,
+      nameKey: "exercise.rearDeltoidRow.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/rear-deltoid-row-1.png",
+      image2: "/images/exercises/rear-deltoid-row-2.png",
+      howToKey: "exercise.rearDeltoidRow.howTo",
+    },
+    {
+      id: 54,
+      nameKey: "exercise.reversePlateCurls.name",
+      type: "Strength",
+      equipment: "Barbell",
+      image1: "/images/exercises/reverse-plate-curls-1.png",
+      image2: "/images/exercises/reverse-plate-curls-2.png",
+      howToKey: "exercise.reversePlateCurls.howTo",
+    },
+    {
+      id: 55,
+      nameKey: "exercise.seatedTricepsPress.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/seated-triceps-press-1.png",
+      image2: "/images/exercises/seated-triceps-press-2.png",
+      howToKey: "exercise.seatedTricepsPress.howTo",
+    },
+    {
+      id: 56,
+      nameKey: "exercise.tricepDips.name",
+      type: "Strength",
+      equipment: "Bench",
+      image1: "/images/exercises/tricep-dips-1.png",
+      image2: "/images/exercises/tricep-dips-2.png",
+      howToKey: "exercise.tricepDips.howTo",
+    },
+    {
+      id: 57,
+      nameKey: "exercise.parallelBarDips.name",
+      type: "Strength",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/parallel-bar-dips-1.png",
+      image2: "/images/exercises/parallel-bar-dips-2.png",
+      howToKey: "exercise.parallelBarDips.howTo",
+    },
+    {
+      id: 58,
+      nameKey: "exercise.barbellSquat.name",
+      type: "Strength",
+      equipment: "Barbell",
+      image1: "/images/exercises/barbell-squat-1.png",
+      image2: "/images/exercises/barbell-squat-2.png",
+      howToKey: "exercise.barbellSquat.howTo",
+    },
+    {
+      id: 59,
+      nameKey: "exercise.smithMachineSquat.name",
+      type: "Strength",
+      equipment: "Machine",
+      image1: "/images/exercises/smith-machine-squat-1.png",
+      image2: "/images/exercises/smith-machine-squat-2.png",
+      howToKey: "exercise.smithMachineSquat.howTo",
+    },
+    {
+      id: 60,
+      nameKey: "exercise.dumbbellSquat.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/dumbbell-squat-1.png",
+      image2: "/images/exercises/dumbbell-squat-2.png",
+      howToKey: "exercise.dumbbellSquat.howTo",
+    },
+    {
+      id: 61,
+      nameKey: "exercise.bandSquat.name",
+      type: "Strength",
+      equipment: "Cable",
+      image1: "/images/exercises/band-squat-1.png",
+      image2: "/images/exercises/band-squat-2.png",
+      howToKey: "exercise.bandSquat.howTo",
+    },
+    {
+      id: 62,
+      nameKey: "exercise.stabilityBallCrunch.name",
+      type: "Strength",
+      equipment: "StabilityBall",
+      image1: "/images/exercises/stability-ball-crunch-1.png",
+      image2: "/images/exercises/stability-ball-crunch-2.png",
+      howToKey: "exercise.stabilityBallCrunch.howTo",
+    },
+    {
+      id: 63,
+      nameKey: "exercise.standingBandCurl.name",
+      type: "Strength",
+      equipment: "Cable",
+      image1: "/images/exercises/standing-band-curl-1.png",
+      image2: "/images/exercises/standing-band-curl-2.png",
+      howToKey: "exercise.standingBandCurl.howTo",
+    },
+    {
+      id: 64,
+      nameKey: "exercise.tBarRow.name",
+      type: "Strength",
+      equipment: "Machine",
+      image1: "/images/exercises/t-bar-row-1.png",
+      image2: "/images/exercises/t-bar-row-2.png",
+      howToKey: "exercise.tBarRow.howTo",
+    },
+    {
+      id: 65,
+      nameKey: "exercise.tricepsKickback.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/triceps-kickback-1.png",
+      image2: "/images/exercises/triceps-kickback-2.png",
+      howToKey: "exercise.tricepsKickback.howTo",
+    },
+    {
+      id: 66,
+      nameKey: "exercise.lyingCloseGripBicepsCurls.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/lying-close-grip-biceps-curls.gif",
+      howToKey: "exercise.lyingCloseGripBicepsCurls.howTo",
+    },
+    {
+      id: 67,
+      nameKey: "exercise.frontRaiseAndPullover.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/front-raise-and-pullover.gif",
+      howToKey: "exercise.frontRaiseAndPullover.howTo",
+    },
+    {
+      id: 68,
+      nameKey: "exercise.hackSquats.name",
+      type: "Strength",
+      equipment: "Machine",
+      media: "/images/exercises/hack-squats.gif",
+      howToKey: "exercise.hackSquats.howTo",
+    },
+    {
+      id: 69,
+      nameKey: "exercise.inclineBicepsCurl.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      media: "/images/exercises/incline-biceps-curl.gif",
+      howToKey: "exercise.inclineBicepsCurl.howTo",
+    },
+    {
+      id: 70,
+      nameKey: "exercise.inclinePushdown.name",
+      type: "Strength",
+      equipment: "Cable",
+      media: "/images/exercises/incline-pushdown.gif",
+      howToKey: "exercise.inclinePushdown.howTo",
+    },
+    {
+      id: 71,
+      nameKey: "exercise.inclineTricepsExtensionCable.name",
+      type: "Strength",
+      equipment: "Cable",
+      media: "/images/exercises/incline-triceps-extension.gif",
+      howToKey: "exercise.inclineTricepsExtensionCable.howTo",
+    },
+    {
+      id: 72,
+      nameKey: "exercise.inclineTricepsExtensionBarbell.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/incline-triceps-extension-barbell.gif",
+      howToKey: "exercise.inclineTricepsExtensionBarbell.howTo",
+    },
+    {
+      id: 73,
+      nameKey: "exercise.jmPress.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/jm-press.gif",
+      howToKey: "exercise.jmPress.howTo",
+    },
+    {
+      id: 74,
+      nameKey: "exercise.oneArmBicepCurlOlympicBar.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/one-arm-bicep-curl-olympic-bar.gif",
+      howToKey: "exercise.oneArmBicepCurlOlympicBar.howTo",
+    },
+    {
+      id: 75,
+      nameKey: "exercise.lyingCloseGripTricepsExtensionBehindHead.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/lying-close-grip-triceps-extension-behind-head.gif",
+      howToKey: "exercise.lyingCloseGripTricepsExtensionBehindHead.howTo",
+    },
+    {
+      id: 76,
+      nameKey: "exercise.lyingHighBenchBicepsCurl.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/lying-high-bench-biceps-curl.gif",
+      howToKey: "exercise.lyingHighBenchBicepsCurl.howTo",
+    },
+    {
+      id: 77,
+      nameKey: "exercise.lyingInclineCurl.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/lying-incline-curl.gif",
+      howToKey: "exercise.lyingInclineCurl.howTo",
+    },
+    {
+      id: 78,
+      nameKey: "exercise.lyingSupineBicepsCurl.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      media: "/images/exercises/lying-supine-biceps-curl.gif",
+      howToKey: "exercise.lyingSupineBicepsCurl.howTo",
+    },
+    {
+      id: 79,
+      nameKey: "exercise.lyingSupineTwoArmTricepsExtension.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      media: "/images/exercises/lying-supine-two-arm-triceps-extension.gif",
+      howToKey: "exercise.lyingSupineTwoArmTricepsExtension.howTo",
+    },
+    {
+      id: 80,
+      nameKey: "exercise.lyingTricepsExtensionCable.name",
+      type: "Strength",
+      equipment: "Cable",
+      media: "/images/exercises/lying-triceps-extension-cable.gif",
+      howToKey: "exercise.lyingTricepsExtensionCable.howTo",
+    },
+    {
+      id: 81,
+      nameKey: "exercise.lyingTricepsExtensionDumbbell.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      media: "/images/exercises/lying-triceps-extension-dumbbell.gif",
+      howToKey: "exercise.lyingTricepsExtensionDumbbell.howTo",
+    },
+    {
+      id: 82,
+      nameKey: "exercise.lyingTricepsPress.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/lying-triceps-press.gif",
+      howToKey: "exercise.lyingTricepsPress.howTo",
     },
   ];
 
@@ -112,111 +775,172 @@ const Workouts = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-white mb-4">
-              Workouts
+              {t('workouts.hero.title')}
             </h1>
             <p className="text-lg sm:text-xl text-white/90">
-              Transform your fitness with our designed workouts
+              {t('workouts.hero.subtitle')}
             </p>
           </div>
         </div>
       </section>
 
-      {/* Filters Section */}
+      {/* View Tabs */}
       <section className="py-8 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Type</label>
-              <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="Strength">Strength</SelectItem>
-                  <SelectItem value="Cardio">Cardio</SelectItem>
-                  <SelectItem value="Stretching">Stretching</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Equipment</label>
-              <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select equipment" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Equipment</SelectItem>
-                  <SelectItem value="Body Weight">Body Weight</SelectItem>
-                  <SelectItem value="Dumbbells">Dumbbells</SelectItem>
-                  <SelectItem value="Barbell">Barbell</SelectItem>
-                  <SelectItem value="Bench">Bench</SelectItem>
-                  <SelectItem value="Stability Ball">Stability Ball</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      </section>
+          <Tabs value={view} onValueChange={(v) => setView(v as any)} className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-8">
+              <TabsTrigger value="exercises">{t('workouts.tabs.library')}</TabsTrigger>
+              <TabsTrigger value="generator">{t('workouts.tabs.generator')}</TabsTrigger>
+              <TabsTrigger value="plan">{t('workouts.tabs.plan')}</TabsTrigger>
+            </TabsList>
 
-      {/* Exercises Grid */}
-      <section className="py-16">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredExercises.map((exercise) => (
-              <Card
-                key={exercise.id}
-                className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden"
-              >
-              <div className="aspect-video w-full overflow-hidden bg-white">
-                {exercise.mediaType === "video" ? (
-                  <video
-                    src={exercise.media}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <img
-                    src={exercise.media}
-                    alt={exercise.name}
-                    className="w-full h-full object-contain"
-                  />
-                )}
+            <TabsContent value="exercises">
+              {/* Filters Section */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">{t('workouts.filters.type')}</label>
+                  <Select value={selectedType} onValueChange={setSelectedType}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t('workouts.filters.type')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{t('workouts.filters.allTypes')}</SelectItem>
+                      <SelectItem value="Strength">{t('workouts.types.strength')}</SelectItem>
+                      <SelectItem value="Cardio">{t('workouts.types.cardio')}</SelectItem>
+                      <SelectItem value="Stretching">{t('workouts.types.stretching')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">{t('workouts.filters.equipment')}</label>
+                  <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t('workouts.filters.equipment')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{t('workouts.filters.allEquipment')}</SelectItem>
+                      <SelectItem value="Barbell">{t('workouts.equipment.barbell')}</SelectItem>
+                      <SelectItem value="Dumbbells">{t('workouts.equipment.dumbbells')}</SelectItem>
+                      <SelectItem value="Bodyweight">{t('workouts.equipment.bodyweight')}</SelectItem>
+                      <SelectItem value="Bench">{t('workouts.equipment.bench')}</SelectItem>
+                      <SelectItem value="StabilityBall">{t('workouts.equipment.stabilityball')}</SelectItem>
+                      <SelectItem value="Cable">{t('workouts.equipment.cable')}</SelectItem>
+                      <SelectItem value="Machine">{t('workouts.equipment.machine')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-                <CardHeader>
-                  <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                    {exercise.name}
-                  </CardTitle>
-                  <CardDescription>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-md">
-                        {exercise.type}
-                      </span>
-                      <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-md">
-                        {exercise.equipment}
-                      </span>
+
+              {/* Exercises Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                {filteredExercises.map((exercise) => (
+                  <Card
+                    key={exercise.id}
+                    className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+                  >
+                    <div 
+                      className="aspect-video w-full overflow-hidden bg-muted cursor-pointer relative"
+                      onClick={() => setFullscreenExercise({ exercise, title: t(exercise.nameKey) })}
+                    >
+                      {exercise.media ? (
+                        <img
+                          src={exercise.media}
+                          alt={t(exercise.nameKey)}
+                          className="w-full h-full object-contain bg-white"
+                        />
+                      ) : exercise.image1 && exercise.image2 ? (
+                        <ExerciseAnimation
+                          image1={exercise.image1}
+                          image2={exercise.image2}
+                          alt={t(exercise.nameKey)}
+                          className="w-full h-full"
+                        />
+                      ) : null}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                        <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium">
+                          {t('workouts.clickFullscreen')}
+                        </span>
+                      </div>
                     </div>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div>
-                    <span className="text-sm font-medium text-muted-foreground">How to do it:</span>
-                    <p className="text-sm mt-1 leading-relaxed">{exercise.howTo}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          {filteredExercises.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground text-lg">No exercises found matching your filters.</p>
-            </div>
-          )}
+                    <CardHeader>
+                      <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                        {t(exercise.nameKey)}
+                      </CardTitle>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-md">
+                          {exercise.type === "Strength" ? t('workouts.types.strength') : exercise.type}
+                        </span>
+                        <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-md">
+                          {exercise.equipment === "Barbell" ? t('workouts.equipment.barbell') : 
+                           exercise.equipment === "Dumbbells" ? t('workouts.equipment.dumbbells') :
+                           exercise.equipment === "Bodyweight" ? t('workouts.equipment.bodyweight') :
+                           exercise.equipment === "Bench" ? t('workouts.equipment.bench') :
+                           exercise.equipment === "StabilityBall" ? t('workouts.equipment.stabilityball') :
+                           exercise.equipment === "Machine" ? t('workouts.equipment.machine') : exercise.equipment}
+                        </span>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div>
+                        <span className="text-sm font-medium text-muted-foreground">{t('workouts.howTo')}</span>
+                        <p className="text-sm mt-1 leading-relaxed">{t(exercise.howToKey)}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              {filteredExercises.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground text-lg">{t('workouts.noResults')}</p>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="generator">
+              <WorkoutPlanGenerator />
+            </TabsContent>
+
+            <TabsContent value="plan">
+              <WorkoutPlanView />
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
+      
+      {/* Fullscreen Image Modal */}
+      <Dialog open={!!fullscreenExercise} onOpenChange={() => setFullscreenExercise(null)}>
+        <DialogContent className="max-w-4xl w-full p-0 bg-white">
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white"
+              onClick={() => setFullscreenExercise(null)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            <div className="bg-white p-4">
+              <h3 className="text-xl font-semibold mb-4">{fullscreenExercise?.title}</h3>
+              <div className="aspect-video w-full bg-white flex items-center justify-center">
+                {fullscreenExercise?.exercise.media ? (
+                  <img
+                    src={fullscreenExercise.exercise.media}
+                    alt={fullscreenExercise.title}
+                    className="max-w-full max-h-full object-contain"
+                  />
+                ) : fullscreenExercise?.exercise.image1 && fullscreenExercise?.exercise.image2 ? (
+                  <ExerciseAnimation
+                    image1={fullscreenExercise.exercise.image1}
+                    image2={fullscreenExercise.exercise.image2}
+                    alt={fullscreenExercise.title}
+                    className="max-w-full max-h-full"
+                  />
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

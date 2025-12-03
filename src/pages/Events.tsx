@@ -54,7 +54,7 @@ const Events = () => {
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (password !== ADMIN_PASSWORD) {
+    if (!isAuthenticated && password !== ADMIN_PASSWORD) {
       toast({
         title: "Error",
         description: t('events.wrongPassword'),
@@ -63,33 +63,26 @@ const Events = () => {
       return;
     }
 
-    const files = event.target.files;
-    if (!files) return;
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const reader = new FileReader();
-      
-      reader.onload = (e) => {
-        const base64String = e.target?.result as string;
-        const newImages = [...galleryImages, base64String];
-        setGalleryImages(newImages);
-        localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(newImages));
-        
-        toast({
-          title: t('support.success'),
-          description: t('events.imageAdded'),
-        });
-      };
-
-      reader.readAsDataURL(file);
-    }
-
-    // Reset file input
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      const newImages = [...galleryImages, base64String];
+      setGalleryImages(newImages);
+      localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(newImages));
+      setIsAuthenticated(true);
+      toast({
+        title: t('support.success'),
+        description: t('events.imageAdded'),
+      });
+    };
+    reader.readAsDataURL(file);
+    
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-    setIsAuthenticated(true);
   };
 
   const handleRemoveImage = (index: number) => {
@@ -113,7 +106,7 @@ const Events = () => {
       title: t('events.title'),
       date: t('events.date'),
       location: t('events.location'),
-      category: "Cycling",
+      category: "Running",
       description: t('events.description'),
       registrationLink: "https://forms.gle/example",
     },
@@ -195,7 +188,7 @@ const Events = () => {
                         </DialogHeader>
                         
                         {showAddImage && (
-                          <div className="space-y-3 p-4 bg-muted rounded-lg">
+                          <div className="space-y-4 p-4 bg-muted rounded-lg">
                             {!isAuthenticated && (
                               <Input
                                 type="password"
@@ -204,36 +197,49 @@ const Events = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                               />
                             )}
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">{t('events.imageUrl')}</label>
-                              <Input
-                                placeholder={t('events.imageUrl')}
-                                value={imageUrl}
-                                onChange={(e) => setImageUrl(e.target.value)}
-                              />
-                            </div>
-                            <Button onClick={handleAddImage} size="sm" className="w-full">
-                              {t('events.add')}
-                            </Button>
-                            <div className="relative">
-                              <input
-                                ref={fileInputRef}
-                                type="file"
-                                multiple
-                                accept="image/*"
-                                onChange={handleFileUpload}
-                                className="hidden"
-                              />
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                className="w-full"
-                                onClick={() => fileInputRef.current?.click()}
-                              >
-                                <Upload className="w-4 h-4 mr-2" />
-                                {t('events.uploadImage')}
-                              </Button>
+                            
+                            <div className="space-y-3">
+                              <div className="flex flex-col gap-2">
+                                <label className="text-sm font-medium">{t('events.uploadImage')}</label>
+                                <div className="flex gap-2">
+                                  <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileUpload}
+                                    className="hidden"
+                                    id="image-upload"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="flex-1"
+                                    onClick={() => fileInputRef.current?.click()}
+                                  >
+                                    <Upload className="w-4 h-4 mr-2" />
+                                    {t('events.uploadImage')}
+                                  </Button>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-center gap-2">
+                                <div className="flex-1 h-px bg-border"></div>
+                                <span className="text-xs text-muted-foreground">{t('events.orUpload')}</span>
+                                <div className="flex-1 h-px bg-border"></div>
+                              </div>
+                              
+                              <div className="flex gap-2">
+                                <Input
+                                  placeholder={t('events.imageUrl')}
+                                  value={imageUrl}
+                                  onChange={(e) => setImageUrl(e.target.value)}
+                                  className="flex-1"
+                                />
+                                <Button onClick={handleAddImage} size="sm">
+                                  {t('events.add')}
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         )}

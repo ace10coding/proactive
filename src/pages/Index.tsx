@@ -122,15 +122,15 @@ const Index = () => {
       y += 50;
     }
 
-    // Bottom branding - PROACTIVE logo with gradient
-    ctx.font = 'bold 48px system-ui';
-    const logoGradient = ctx.createLinearGradient(canvas.width / 2 - 150, 1750, canvas.width / 2 + 150, 1750);
-    logoGradient.addColorStop(0, '#22c55e');
-    logoGradient.addColorStop(1, '#3b82f6');
-    ctx.fillStyle = logoGradient;
-    const logoText = 'PROACTIVE';
+    // Bottom branding - Proactive logo with gradient
+    ctx.font = 'bold 56px system-ui';
+    const proactiveGradient = ctx.createLinearGradient(canvas.width / 2 - 200, 1700, canvas.width / 2 + 200, 1700);
+    proactiveGradient.addColorStop(0, '#22c55e');
+    proactiveGradient.addColorStop(1, '#3b82f6');
+    ctx.fillStyle = proactiveGradient;
+    const logoText = 'Proactive';
     const logoWidth = ctx.measureText(logoText).width;
-    ctx.fillText(logoText, (canvas.width - logoWidth) / 2, 1820);
+    ctx.fillText(logoText, (canvas.width - logoWidth) / 2, 1800);
 
     // Download the image
     const link = document.createElement('a');
