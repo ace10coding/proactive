@@ -42,7 +42,7 @@ const Workouts = () => {
       nameKey: "exercise.arnoldPress.name",
       type: "Strength",
       equipment: "Dumbbells",
-      media: "/images/arnold-press.gif",
+      media: "/images/exercises/arnold-press.gif",
       howToKey: "exercise.arnoldPress.howTo",
     },
     {
@@ -52,6 +52,78 @@ const Workouts = () => {
       equipment: "Barbell",
       media: "/images/barbell-upright-rows.gif",
       howToKey: "exercise.barbellUprightRows.howTo",
+    },
+    {
+      id: 4,
+      nameKey: "exercise.backExtension.name",
+      type: "Strength",
+      equipment: "StabilityBall",
+      media: "/images/exercises/back-extension-stability-ball.gif",
+      howToKey: "exercise.backExtension.howTo",
+    },
+    {
+      id: 5,
+      nameKey: "exercise.barbellShrugs.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/barbell-shrugs.gif",
+      howToKey: "exercise.barbellShrugs.howTo",
+    },
+    {
+      id: 6,
+      nameKey: "exercise.benchDips.name",
+      type: "Strength",
+      equipment: "Bench",
+      media: "/images/exercises/bench-dips.gif",
+      howToKey: "exercise.benchDips.howTo",
+    },
+    {
+      id: 7,
+      nameKey: "exercise.benchPress.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/bench-press.gif",
+      howToKey: "exercise.benchPress.howTo",
+    },
+    {
+      id: 8,
+      nameKey: "exercise.bentArmPullover.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/bent-arm-pullover.gif",
+      howToKey: "exercise.bentArmPullover.howTo",
+    },
+    {
+      id: 9,
+      nameKey: "exercise.bentKneeHipRaise.name",
+      type: "Strength",
+      equipment: "Bodyweight",
+      media: "/images/exercises/bent-knee-hip-raise.gif",
+      howToKey: "exercise.bentKneeHipRaise.howTo",
+    },
+    {
+      id: 10,
+      nameKey: "exercise.bicepCurlsBarbell.name",
+      type: "Strength",
+      equipment: "Barbell",
+      media: "/images/exercises/bicep-curls-barbell.gif",
+      howToKey: "exercise.bicepCurlsBarbell.howTo",
+    },
+    {
+      id: 11,
+      nameKey: "exercise.hammerCurl.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      media: "/images/exercises/hammer-curl.gif",
+      howToKey: "exercise.hammerCurl.howTo",
+    },
+    {
+      id: 12,
+      nameKey: "exercise.bicepsCurlDumbbell.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      media: "/images/exercises/biceps-curl-dumbbell.gif",
+      howToKey: "exercise.bicepsCurlDumbbell.howTo",
     },
   ];
 
@@ -114,6 +186,9 @@ const Workouts = () => {
                       <SelectItem value="all">{t('workouts.filters.allEquipment')}</SelectItem>
                       <SelectItem value="Barbell">{t('workouts.equipment.barbell')}</SelectItem>
                       <SelectItem value="Dumbbells">{t('workouts.equipment.dumbbells')}</SelectItem>
+                      <SelectItem value="Bodyweight">{t('workouts.equipment.bodyweight')}</SelectItem>
+                      <SelectItem value="Bench">{t('workouts.equipment.bench')}</SelectItem>
+                      <SelectItem value="StabilityBall">{t('workouts.equipment.stabilityball')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -151,7 +226,11 @@ const Workouts = () => {
                             {exercise.type === "Strength" ? t('workouts.types.strength') : exercise.type}
                           </span>
                           <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-md">
-                            {exercise.equipment === "Barbell" ? t('workouts.equipment.barbell') : t('workouts.equipment.dumbbells')}
+                            {exercise.equipment === "Barbell" ? t('workouts.equipment.barbell') : 
+                             exercise.equipment === "Dumbbells" ? t('workouts.equipment.dumbbells') :
+                             exercise.equipment === "Bodyweight" ? t('workouts.equipment.bodyweight') :
+                             exercise.equipment === "Bench" ? t('workouts.equipment.bench') :
+                             exercise.equipment === "StabilityBall" ? t('workouts.equipment.stabilityball') : exercise.equipment}
                           </span>
                         </div>
                       </CardDescription>

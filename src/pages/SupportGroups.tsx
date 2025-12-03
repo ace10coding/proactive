@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Users, MessageCircle, Eye, Plus, Pencil, Trash2, X, Check } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface Topic {
@@ -70,90 +69,114 @@ const SupportGroups = () => {
   }, [selectedTopic]);
 
   const loadTopics = async () => {
-    const { data, error } = await supabase
-      .from('support_topics')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setTopics(data);
+    try {
+      const response = await fetch('/api/support/topics');
+      if (response.ok) {
+        const data = await response.json();
+        setTopics(data);
+      }
+    } catch (error) {
+      console.error('Error loading topics:', error);
     }
   };
 
   const loadPosts = async (topicId: string) => {
-    const { data, error } = await supabase
-      .from('support_posts')
-      .select('*')
-      .eq('topic_id', topicId)
-      .order('created_at', { ascending: true });
-
-    if (!error && data) {
-      setPosts(data);
+    try {
+      const response = await fetch(`/api/support/posts/${topicId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data);
+      }
+    } catch (error) {
+      console.error('Error loading posts:', error);
     }
   };
 
   const incrementViewCount = async (topicId: string) => {
-    await supabase.rpc('increment_topic_views', { topic_id: topicId });
+    try {
+      await fetch(`/api/support/topics/${topicId}/increment-views`, { method: 'POST' });
+    } catch (error) {
+      console.error('Error incrementing views:', error);
+    }
   };
 
   const createTopic = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
-    const { error } = await supabase.from('support_topics').insert({
-      title: formData.get('title') as string,
-      description: formData.get('description') as string,
-      category: formData.get('category') as string,
-    });
+    try {
+      const response = await fetch('/api/support/topics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: formData.get('title') as string,
+          description: formData.get('description') as string,
+          category: formData.get('category') as string,
+        }),
+      });
 
-    if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
-    } else {
-      toast({ title: t('support.success'), description: t('support.topicCreated') });
-      setNewTopicOpen(false);
-      loadTopics();
+      if (response.ok) {
+        toast({ title: t('support.success'), description: t('support.topicCreated') });
+        setNewTopicOpen(false);
+        loadTopics();
+      } else {
+        toast({ title: 'Error', description: 'Failed to create topic', variant: 'destructive' });
+      }
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to create topic', variant: 'destructive' });
     }
   };
 
   const createPost = async () => {
     if (!selectedTopic || !replyContent.trim()) return;
 
-    const { error } = await supabase.from('support_posts').insert({
-      topic_id: selectedTopic.id,
-      content: replyContent,
-      username: username.trim() || 'Anonymous',
-    });
+    try {
+      const response = await fetch('/api/support/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          topicId: selectedTopic.id,
+          content: replyContent,
+          username: username.trim() || 'Anonymous',
+        }),
+      });
 
-    if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
-    } else {
-      setReplyContent('');
-      loadPosts(selectedTopic.id);
+      if (response.ok) {
+        setReplyContent('');
+        loadPosts(selectedTopic.id);
+      } else {
+        toast({ title: 'Error', description: 'Failed to create post', variant: 'destructive' });
+      }
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to create post', variant: 'destructive' });
     }
   };
 
   const deleteTopic = async (topicId: string) => {
-    // First delete all posts for this topic
-    await supabase.from('support_posts').delete().eq('topic_id', topicId);
-    
-    const { error } = await supabase.from('support_topics').delete().eq('id', topicId);
-    
-    if (!error) {
-      toast({ title: t('support.success'), description: t('support.deleted') });
-      if (selectedTopic?.id === topicId) {
-        setSelectedTopic(null);
-        setPosts([]);
+    try {
+      const response = await fetch(`/api/support/topics/${topicId}`, { method: 'DELETE' });
+      if (response.ok) {
+        toast({ title: t('support.success'), description: t('support.deleted') });
+        if (selectedTopic?.id === topicId) {
+          setSelectedTopic(null);
+          setPosts([]);
+        }
+        loadTopics();
       }
-      loadTopics();
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to delete topic', variant: 'destructive' });
     }
   };
 
   const deletePost = async (postId: string) => {
-    const { error } = await supabase.from('support_posts').delete().eq('id', postId);
-    
-    if (!error) {
-      toast({ title: t('support.success'), description: t('support.deleted') });
-      if (selectedTopic) loadPosts(selectedTopic.id);
+    try {
+      const response = await fetch(`/api/support/posts/${postId}`, { method: 'DELETE' });
+      if (response.ok) {
+        toast({ title: t('support.success'), description: t('support.deleted') });
+        if (selectedTopic) loadPosts(selectedTopic.id);
+      }
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to delete post', variant: 'destructive' });
     }
   };
 
@@ -164,18 +187,23 @@ const SupportGroups = () => {
   };
 
   const saveEditTopic = async (topicId: string) => {
-    const { error } = await supabase
-      .from('support_topics')
-      .update({ title: editTitle, description: editDescription })
-      .eq('id', topicId);
+    try {
+      const response = await fetch(`/api/support/topics/${topicId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: editTitle, description: editDescription }),
+      });
 
-    if (!error) {
-      toast({ title: t('support.success'), description: t('support.updated') });
-      setEditingTopic(null);
-      loadTopics();
-      if (selectedTopic?.id === topicId) {
-        setSelectedTopic({ ...selectedTopic, title: editTitle, description: editDescription });
+      if (response.ok) {
+        toast({ title: t('support.success'), description: t('support.updated') });
+        setEditingTopic(null);
+        loadTopics();
+        if (selectedTopic?.id === topicId) {
+          setSelectedTopic({ ...selectedTopic, title: editTitle, description: editDescription });
+        }
       }
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to update topic', variant: 'destructive' });
     }
   };
 
@@ -185,15 +213,20 @@ const SupportGroups = () => {
   };
 
   const saveEditPost = async (postId: string) => {
-    const { error } = await supabase
-      .from('support_posts')
-      .update({ content: editContent })
-      .eq('id', postId);
+    try {
+      const response = await fetch(`/api/support/posts/${postId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: editContent }),
+      });
 
-    if (!error) {
-      toast({ title: t('support.success'), description: t('support.updated') });
-      setEditingPost(null);
-      if (selectedTopic) loadPosts(selectedTopic.id);
+      if (response.ok) {
+        toast({ title: t('support.success'), description: t('support.updated') });
+        setEditingPost(null);
+        if (selectedTopic) loadPosts(selectedTopic.id);
+      }
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to update post', variant: 'destructive' });
     }
   };
 

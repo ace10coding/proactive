@@ -94,15 +94,30 @@ Preferred communication style: Simple, everyday language.
 - Collapsible mobile navigation menu
 - Container-based layouts with max-width constraints
 
+## Recent Changes
+
+**December 3, 2025 - Migration from Supabase to Replit Neon PostgreSQL**
+- Migrated from Supabase to Replit's integrated Neon PostgreSQL database
+- Implemented Drizzle ORM for type-safe database operations
+- Created Express API server for backend endpoints
+- Updated SupportGroups component to use REST API instead of direct database calls
+- Removed Supabase dependencies and configuration files
+
 ## External Dependencies
 
 ### Backend Services
 
-**Supabase**
+**Neon PostgreSQL (Replit Integrated)**
 - PostgreSQL database for support group topics and posts
-- Real-time subscriptions capability (configured but not actively used)
-- Client initialization via `@supabase/supabase-js` package
-- Connection configured through environment variables (URL and anon key expected)
+- Managed through Drizzle ORM for type-safe queries
+- Connection via DATABASE_URL environment variable
+- Schema defined in `shared/schema.ts`
+
+**Express API Server**
+- RESTful API endpoints in `server/index.ts`
+- Runs on port 3001 (proxied through Vite on development)
+- Handles all database operations for support groups
+- CRUD operations for topics and posts
 
 ### UI Libraries
 

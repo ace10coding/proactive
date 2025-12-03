@@ -1,4 +1,0 @@
-project_id = "esldjohbvaipduxgiczq"
-
-[functions.health-chat]
-verify_jwt = false
