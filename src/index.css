@@ -93,46 +93,4 @@ All colors MUST be HSL.
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-bold;
   }
-
-  /* Keep GIFs native - allow browser to handle animation */
-  img[src*=".gif"] {
-    display: block;
-  }
-
-  /* Fade in animation for images */
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.3s ease-in-out;
-  }
-
-  /* Prevent zoom on input focus */
-  input,
-  select,
-  textarea {
-    font-size: 16px;
-  }
-
-  @media (max-width: 768px) {
-    body {
-      -webkit-user-select: none;
-      user-select: none;
-      -webkit-touch-callout: none;
-    }
-
-    button,
-    a {
-      -webkit-user-select: text;
-      user-select: text;
-    }
-  }
 }
-
-

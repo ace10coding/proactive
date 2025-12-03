@@ -1,136 +1,50 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
-import WorkoutPlanGenerator from "@/components/WorkoutPlanGenerator";
-import WorkoutPlanView from "@/components/WorkoutPlanView";
 
 const Workouts = () => {
-  const { t } = useLanguage();
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedEquipment, setSelectedEquipment] = useState<string>("all");
-  const [view, setView] = useState<"exercises" | "generator" | "plan">("exercises");
-  const [fullscreenImage, setFullscreenImage] = useState<{ src: string; title: string } | null>(null);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const viewParam = params.get("view");
-    const hasPlan = localStorage.getItem("workoutPlan");
-    
-    if (viewParam === "plan" && hasPlan) {
-      setView("plan");
-    } else if (viewParam === "generator") {
-      setView("generator");
-    }
-  }, []);
+  const [selectedMuscle, setSelectedMuscle] = useState<string>("all");
 
   const exercises = [
     {
       id: 1,
-      nameKey: "exercise.barbellFrontRaises.name",
+      name: "Push Up",
       type: "Strength",
-      equipment: "Barbell",
-      media: "/images/exercises/barbell-front-raises.gif",
-      howToKey: "exercise.barbellFrontRaises.howTo",
+      equipment: "Body Weight",
+      muscle: "Chest, Triceps, Shoulders",
+      media: "/videos/push-up.mp4",
+      mediaType: "video",
+      howTo: "Start in a high plank position with hands slightly wider than shoulder-width. Lower your body until your chest nearly touches the floor, keeping your elbows at a 45-degree angle. Push back up to the starting position. Keep your core engaged and body in a straight line throughout the movement.",
     },
     {
       id: 2,
-      nameKey: "exercise.arnoldPress.name",
+      name: "Diamond Push Up",
       type: "Strength",
-      equipment: "Dumbbells",
-      media: "/images/exercises/arnold-press.gif",
-      howToKey: "exercise.arnoldPress.howTo",
+      equipment: "Body Weight",
+      muscle: "Triceps, Chest, Shoulders",
+      media: "/videos/diamond-push-up.mp4",
+      mediaType: "video",
+      howTo: "Start in a high plank position with your hands close together, forming a diamond shape with your index fingers and thumbs. Lower your body while keeping your elbows close to your sides. Push back up to the starting position. This variation puts more emphasis on the triceps.",
     },
     {
       id: 3,
-      nameKey: "exercise.barbellUprightRows.name",
+      name: "Plank",
       type: "Strength",
-      equipment: "Barbell",
-      media: "/images/exercises/barbell-upright-rows.gif",
-      howToKey: "exercise.barbellUprightRows.howTo",
-    },
-    {
-      id: 4,
-      nameKey: "exercise.backExtension.name",
-      type: "Strength",
-      equipment: "StabilityBall",
-      media: "/images/exercises/back-extension-stability-ball.gif",
-      howToKey: "exercise.backExtension.howTo",
-    },
-    {
-      id: 5,
-      nameKey: "exercise.barbellShrugs.name",
-      type: "Strength",
-      equipment: "Barbell",
-      media: "/images/exercises/barbell-shrugs.gif",
-      howToKey: "exercise.barbellShrugs.howTo",
-    },
-    {
-      id: 6,
-      nameKey: "exercise.benchDips.name",
-      type: "Strength",
-      equipment: "Bench",
-      media: "/images/exercises/bench-dips.gif",
-      howToKey: "exercise.benchDips.howTo",
-    },
-    {
-      id: 7,
-      nameKey: "exercise.benchPress.name",
-      type: "Strength",
-      equipment: "Barbell",
-      media: "/images/exercises/bench-press.gif",
-      howToKey: "exercise.benchPress.howTo",
-    },
-    {
-      id: 8,
-      nameKey: "exercise.bentArmPullover.name",
-      type: "Strength",
-      equipment: "Barbell",
-      media: "/images/exercises/bent-arm-pullover.gif",
-      howToKey: "exercise.bentArmPullover.howTo",
-    },
-    {
-      id: 9,
-      nameKey: "exercise.bentKneeHipRaise.name",
-      type: "Strength",
-      equipment: "Bodyweight",
-      media: "/images/exercises/bent-knee-hip-raise.gif",
-      howToKey: "exercise.bentKneeHipRaise.howTo",
-    },
-    {
-      id: 10,
-      nameKey: "exercise.bicepCurlsBarbell.name",
-      type: "Strength",
-      equipment: "Barbell",
-      media: "/images/exercises/bicep-curls-barbell.gif",
-      howToKey: "exercise.bicepCurlsBarbell.howTo",
-    },
-    {
-      id: 11,
-      nameKey: "exercise.hammerCurl.name",
-      type: "Strength",
-      equipment: "Dumbbells",
-      media: "/images/exercises/hammer-curl.gif",
-      howToKey: "exercise.hammerCurl.howTo",
-    },
-    {
-      id: 12,
-      nameKey: "exercise.bicepsCurlDumbbell.name",
-      type: "Strength",
-      equipment: "Dumbbells",
-      media: "/images/exercises/biceps-curl-dumbbell.gif",
-      howToKey: "exercise.bicepsCurlDumbbell.howTo",
+      equipment: "Body Weight",
+      muscle: "Core, Abs",
+      media: "/images/plank.jpeg",
+      mediaType: "image",
+      howTo: "Start in a forearm plank position with your elbows directly under your shoulders and forearms parallel to each other. Keep your body in a straight line from head to heels, engaging your core muscles. Hold this position without letting your hips sag or pike up. Focus on breathing steadily while maintaining proper form.",
     },
   ];
 
   const filteredExercises = exercises.filter((exercise) => {
     const typeMatch = selectedType === "all" || exercise.type === selectedType;
     const equipmentMatch = selectedEquipment === "all" || exercise.equipment === selectedEquipment;
-    return typeMatch && equipmentMatch;
+    const muscleMatch = selectedMuscle === "all" || exercise.muscle.toLowerCase().includes(selectedMuscle.toLowerCase());
+    return typeMatch && equipmentMatch && muscleMatch;
   });
 
   return (
@@ -140,153 +54,128 @@ const Workouts = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-white mb-4">
-              {t('workouts.hero.title')}
+              Workouts
             </h1>
             <p className="text-lg sm:text-xl text-white/90">
-              {t('workouts.hero.subtitle')}
+              Transform your fitness with our designed workouts
             </p>
           </div>
         </div>
       </section>
 
-      {/* View Tabs */}
+      {/* Filters Section */}
       <section className="py-8 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6">
-          <Tabs value={view} onValueChange={(v) => setView(v as any)} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="exercises">{t('workouts.tabs.library')}</TabsTrigger>
-              <TabsTrigger value="generator">{t('workouts.tabs.generator')}</TabsTrigger>
-              <TabsTrigger value="plan">{t('workouts.tabs.plan')}</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="exercises">
-              {/* Filters Section */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('workouts.filters.type')}</label>
-                  <Select value={selectedType} onValueChange={setSelectedType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('workouts.filters.type')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{t('workouts.filters.allTypes')}</SelectItem>
-                      <SelectItem value="Strength">{t('workouts.types.strength')}</SelectItem>
-                      <SelectItem value="Cardio">{t('workouts.types.cardio')}</SelectItem>
-                      <SelectItem value="Stretching">{t('workouts.types.stretching')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t('workouts.filters.equipment')}</label>
-                  <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('workouts.filters.equipment')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{t('workouts.filters.allEquipment')}</SelectItem>
-                      <SelectItem value="Barbell">{t('workouts.equipment.barbell')}</SelectItem>
-                      <SelectItem value="Dumbbells">{t('workouts.equipment.dumbbells')}</SelectItem>
-                      <SelectItem value="Bodyweight">{t('workouts.equipment.bodyweight')}</SelectItem>
-                      <SelectItem value="Bench">{t('workouts.equipment.bench')}</SelectItem>
-                      <SelectItem value="StabilityBall">{t('workouts.equipment.stabilityball')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Exercises Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                {filteredExercises.map((exercise) => (
-                  <Card
-                    key={exercise.id}
-                    className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden"
-                  >
-                    <div 
-                      className="aspect-video w-full overflow-hidden bg-muted cursor-pointer relative"
-                      onClick={() => setFullscreenImage({ src: exercise.media, title: t(exercise.nameKey) })}
-                    >
-                      <img
-                        src={exercise.media}
-                        alt={t(exercise.nameKey)}
-                        className="w-full h-full object-contain bg-white"
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                        <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium">
-                          {t('workouts.clickFullscreen')}
-                        </span>
-                      </div>
-                    </div>
-                    <CardHeader>
-                      <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                        {t(exercise.nameKey)}
-                      </CardTitle>
-                      <CardDescription>
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-md">
-                            {exercise.type === "Strength" ? t('workouts.types.strength') : exercise.type}
-                          </span>
-                          <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-md">
-                            {exercise.equipment === "Barbell" ? t('workouts.equipment.barbell') : 
-                             exercise.equipment === "Dumbbells" ? t('workouts.equipment.dumbbells') :
-                             exercise.equipment === "Bodyweight" ? t('workouts.equipment.bodyweight') :
-                             exercise.equipment === "Bench" ? t('workouts.equipment.bench') :
-                             exercise.equipment === "StabilityBall" ? t('workouts.equipment.stabilityball') : exercise.equipment}
-                          </span>
-                        </div>
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div>
-                        <span className="text-sm font-medium text-muted-foreground">{t('workouts.howTo')}</span>
-                        <p className="text-sm mt-1 leading-relaxed">{t(exercise.howToKey)}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-              {filteredExercises.length === 0 && (
-                <div className="text-center py-12">
-                  <p className="text-muted-foreground text-lg">{t('workouts.noResults')}</p>
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="generator">
-              <WorkoutPlanGenerator />
-            </TabsContent>
-
-            <TabsContent value="plan">
-              <WorkoutPlanView />
-            </TabsContent>
-          </Tabs>
-        </div>
-      </section>
-      
-      {/* Fullscreen Image Modal */}
-      <Dialog open={!!fullscreenImage} onOpenChange={() => setFullscreenImage(null)}>
-        <DialogContent className="max-w-4xl w-full p-0 bg-white">
-          <div className="relative">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-2 right-2 z-10 bg-black/50 hover:bg-black/70 text-white"
-              onClick={() => setFullscreenImage(null)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-            <div className="bg-white p-4">
-              <h3 className="text-xl font-semibold mb-4">{fullscreenImage?.title}</h3>
-              <div className="aspect-video w-full bg-white flex items-center justify-center">
-                <img
-                  src={fullscreenImage?.src || ""}
-                  alt={fullscreenImage?.title || ""}
-                  className="max-w-full max-h-full object-contain"
-                />
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Type</label>
+              <Select value={selectedType} onValueChange={setSelectedType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="Strength">Strength</SelectItem>
+                  <SelectItem value="Cardio">Cardio</SelectItem>
+                  <SelectItem value="Stretching">Stretching</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Equipment</label>
+              <Select value={selectedEquipment} onValueChange={setSelectedEquipment}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select equipment" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Equipment</SelectItem>
+                  <SelectItem value="Body Weight">Body Weight</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Muscle</label>
+              <Select value={selectedMuscle} onValueChange={setSelectedMuscle}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select muscle" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Muscles</SelectItem>
+                  <SelectItem value="Chest">Chest</SelectItem>
+                  <SelectItem value="Triceps">Triceps</SelectItem>
+                  <SelectItem value="Shoulders">Shoulders</SelectItem>
+                  <SelectItem value="Core">Core</SelectItem>
+                  <SelectItem value="Abs">Abs</SelectItem>
+                  <SelectItem value="Back">Back</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      </section>
+
+      {/* Exercises Grid */}
+      <section className="py-16">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredExercises.map((exercise) => (
+              <Card
+                key={exercise.id}
+                className="group hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+              >
+                <div className="aspect-video w-full overflow-hidden bg-muted">
+                  {exercise.mediaType === "video" ? (
+                    <video
+                      src={exercise.media}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-contain bg-black"
+                    />
+                  ) : (
+                    <img
+                      src={exercise.media}
+                      alt={exercise.name}
+                      className="w-full h-full object-contain bg-black"
+                    />
+                  )}
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                    {exercise.name}
+                  </CardTitle>
+                  <CardDescription>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-md">
+                        {exercise.type}
+                      </span>
+                      <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-md">
+                        {exercise.equipment}
+                      </span>
+                    </div>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div>
+                    <span className="text-sm font-medium text-muted-foreground">Target Muscles:</span>
+                    <p className="text-sm mt-1">{exercise.muscle}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-muted-foreground">How to do it:</span>
+                    <p className="text-sm mt-1 leading-relaxed">{exercise.howTo}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          {filteredExercises.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg">No exercises found matching your filters.</p>
+            </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 };
