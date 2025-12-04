@@ -99,7 +99,7 @@ const Calculator = () => {
                   </div>
                   <Button
                     onClick={calculateBMI}
-                    className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
+                    className="w-full bg-gradient-primary hover:opacity-90 transition-opacity text-base sm:text-lg"
                     size="lg"
                   >
                     {t('calculator.calculate')}
