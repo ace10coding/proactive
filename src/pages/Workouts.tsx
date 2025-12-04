@@ -851,10 +851,10 @@ const Workouts = () => {
       <section className="py-8 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6">
           <Tabs value={view} onValueChange={(v) => setView(v as any)} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="exercises">{t('workouts.tabs.library')}</TabsTrigger>
-              <TabsTrigger value="generator">{t('workouts.tabs.generator')}</TabsTrigger>
-              <TabsTrigger value="plan">{t('workouts.tabs.plan')}</TabsTrigger>
+            <TabsList className="flex flex-col sm:flex-row w-full h-auto sm:h-10 mb-8 gap-1 sm:gap-0">
+              <TabsTrigger value="exercises" className="flex-1 text-xs sm:text-sm py-2 sm:py-1.5">{t('workouts.tabs.library')}</TabsTrigger>
+              <TabsTrigger value="generator" className="flex-1 text-xs sm:text-sm py-2 sm:py-1.5">{t('workouts.tabs.generator')}</TabsTrigger>
+              <TabsTrigger value="plan" className="flex-1 text-xs sm:text-sm py-2 sm:py-1.5">{t('workouts.tabs.plan')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="exercises">
