@@ -273,6 +273,16 @@ const translations: Record<Language, Record<string, string>> = {
     'exercise.lyingTricepsExtensionDumbbell.howTo': 'Lie on a flat bench holding a dumbbell with both hands above your chest. Lower the weight behind your head by bending your elbows. Extend back up, squeezing your triceps.',
     'exercise.lyingTricepsPress.name': 'Lying Triceps Press',
     'exercise.lyingTricepsPress.howTo': 'Lie on a flat bench holding a barbell above your chest with arms extended. Lower the bar toward your forehead by bending your elbows. Press back up to the starting position.',
+    'exercise.weightedSissySquat.name': 'Weighted Sissy Squat',
+    'exercise.weightedSissySquat.howTo': 'Stand next to a pole or support, holding it for balance with one hand. Hold a weight plate against your chest with the other hand. Rise onto your toes, then lean back while bending your knees forward. Lower down until your thighs are parallel to the floor, keeping your torso and thighs in a straight line. Push back up through your toes.',
+    'exercise.thighAdductor.name': 'Thigh Adductor',
+    'exercise.thighAdductor.howTo': 'Sit on the adductor machine with your back against the pad and legs spread apart on the leg pads. Squeeze your inner thighs together to bring the pads inward against the resistance. Hold briefly at the center, then slowly return to the starting position with control.',
+    'exercise.standingTricepsExtension.name': 'Standing Triceps Extension',
+    'exercise.standingTricepsExtension.howTo': 'Stand with feet shoulder-width apart, holding a dumbbell with both hands above your head, arms fully extended. Keep your upper arms close to your ears and slowly lower the weight behind your head by bending at the elbows. Extend your arms back up to the starting position, squeezing your triceps at the top.',
+    'exercise.smithMachineRearDeltoidRow.name': 'Smith Machine Rear Deltoid Row',
+    'exercise.smithMachineRearDeltoidRow.howTo': 'Stand facing a Smith machine with the bar set at thigh height. Bend forward at the hips with a slight bend in your knees. Grip the bar wider than shoulder-width with an overhand grip. Pull the bar up toward your chest by squeezing your shoulder blades together and driving your elbows out. Lower the bar with control.',
+    'exercise.seatedOverheadTricepsExtension.name': 'Seated Overhead Triceps Extension',
+    'exercise.seatedOverheadTricepsExtension.howTo': 'Sit on a bench with back support, holding a barbell overhead with arms fully extended. Keep your upper arms stationary and close to your head. Lower the bar behind your head by bending at the elbows. Extend your arms back up, squeezing your triceps at the top.',
     
     // Calculator page
     'calculator.hero.title': 'BMI Calculator',
@@ -607,6 +617,16 @@ const translations: Record<Language, Record<string, string>> = {
     'exercise.lyingTricepsExtensionDumbbell.howTo': 'Deite em um banco reto segurando um haltere com ambas as mãos acima do peito. Abaixe o peso atrás da cabeça dobrando os cotovelos. Estenda de volta, contraindo o tríceps.',
     'exercise.lyingTricepsPress.name': 'Supino para Tríceps Deitado',
     'exercise.lyingTricepsPress.howTo': 'Deite em um banco reto segurando uma barra acima do peito com braços estendidos. Abaixe a barra em direção à testa dobrando os cotovelos. Pressione de volta à posição inicial.',
+    'exercise.weightedSissySquat.name': 'Agachamento Sissy com Peso',
+    'exercise.weightedSissySquat.howTo': 'Fique ao lado de um poste ou suporte, segurando-o para equilíbrio com uma mão. Segure uma anilha contra o peito com a outra mão. Suba nas pontas dos pés, depois incline-se para trás enquanto dobra os joelhos para frente. Desça até que as coxas fiquem paralelas ao chão, mantendo o torso e coxas em linha reta. Empurre de volta através das pontas dos pés.',
+    'exercise.thighAdductor.name': 'Adutor de Coxa',
+    'exercise.thighAdductor.howTo': 'Sente-se na máquina adutora com as costas contra o apoio e pernas afastadas nos suportes. Aperte as coxas internas para trazer os suportes para dentro contra a resistência. Segure brevemente no centro, depois retorne lentamente à posição inicial com controle.',
+    'exercise.standingTricepsExtension.name': 'Extensão de Tríceps em Pé',
+    'exercise.standingTricepsExtension.howTo': 'Fique em pé com os pés na largura dos ombros, segurando um haltere com ambas as mãos acima da cabeça, braços totalmente estendidos. Mantenha os braços superiores próximos às orelhas e abaixe lentamente o peso atrás da cabeça dobrando os cotovelos. Estenda os braços de volta à posição inicial, contraindo o tríceps no topo.',
+    'exercise.smithMachineRearDeltoidRow.name': 'Remada para Deltoide Posterior na Smith',
+    'exercise.smithMachineRearDeltoidRow.howTo': 'Fique de frente para uma máquina Smith com a barra na altura das coxas. Incline-se para frente nos quadris com uma leve flexão nos joelhos. Segure a barra mais larga que os ombros com pegada pronada. Puxe a barra em direção ao peito contraindo as escápulas e levando os cotovelos para fora. Abaixe a barra com controle.',
+    'exercise.seatedOverheadTricepsExtension.name': 'Extensão de Tríceps Acima da Cabeça Sentado',
+    'exercise.seatedOverheadTricepsExtension.howTo': 'Sente-se em um banco com apoio para as costas, segurando uma barra acima da cabeça com braços totalmente estendidos. Mantenha os braços superiores parados e próximos à cabeça. Abaixe a barra atrás da cabeça dobrando os cotovelos. Estenda os braços de volta, contraindo o tríceps no topo.',
     
     // Calculator page
     'calculator.hero.title': 'Calculadora de IMC',
