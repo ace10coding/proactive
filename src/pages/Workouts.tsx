@@ -805,6 +805,24 @@ const Workouts = () => {
       image2: "/images/exercises/seated-overhead-triceps-extension-1.png",
       howToKey: "exercise.seatedOverheadTricepsExtension.howTo",
     },
+    {
+      id: 88,
+      nameKey: "exercise.wideGripLatPullDown.name",
+      type: "Strength",
+      equipment: "Cable",
+      image1: "/images/exercises/wide-grip-lat-pull-down-2.png",
+      image2: "/images/exercises/wide-grip-lat-pull-down-1.png",
+      howToKey: "exercise.wideGripLatPullDown.howTo",
+    },
+    {
+      id: 89,
+      nameKey: "exercise.walkingLunges.name",
+      type: "Strength",
+      equipment: "Dumbbells",
+      image1: "/images/exercises/walking-lunges-2.png",
+      image2: "/images/exercises/walking-lunges-1.png",
+      howToKey: "exercise.walkingLunges.howTo",
+    },
   ];
 
   const filteredExercises = exercises.filter((exercise) => {
@@ -848,7 +866,7 @@ const Workouts = () => {
                     <SelectTrigger>
                       <SelectValue placeholder={t('workouts.filters.type')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px] overflow-y-auto">
                       <SelectItem value="all">{t('workouts.filters.allTypes')}</SelectItem>
                       <SelectItem value="Strength">{t('workouts.types.strength')}</SelectItem>
                       <SelectItem value="Cardio">{t('workouts.types.cardio')}</SelectItem>
@@ -862,7 +880,7 @@ const Workouts = () => {
                     <SelectTrigger>
                       <SelectValue placeholder={t('workouts.filters.equipment')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px] overflow-y-auto">
                       <SelectItem value="all">{t('workouts.filters.allEquipment')}</SelectItem>
                       <SelectItem value="Barbell">{t('workouts.equipment.barbell')}</SelectItem>
                       <SelectItem value="Dumbbells">{t('workouts.equipment.dumbbells')}</SelectItem>

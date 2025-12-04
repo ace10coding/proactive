@@ -283,6 +283,10 @@ const translations: Record<Language, Record<string, string>> = {
     'exercise.smithMachineRearDeltoidRow.howTo': 'Stand facing a Smith machine with the bar set at thigh height. Bend forward at the hips with a slight bend in your knees. Grip the bar wider than shoulder-width with an overhand grip. Pull the bar up toward your chest by squeezing your shoulder blades together and driving your elbows out. Lower the bar with control.',
     'exercise.seatedOverheadTricepsExtension.name': 'Seated Overhead Triceps Extension',
     'exercise.seatedOverheadTricepsExtension.howTo': 'Sit on a bench with back support, holding a barbell overhead with arms fully extended. Keep your upper arms stationary and close to your head. Lower the bar behind your head by bending at the elbows. Extend your arms back up, squeezing your triceps at the top.',
+    'exercise.wideGripLatPullDown.name': 'Wide Grip Lat Pull Down',
+    'exercise.wideGripLatPullDown.howTo': 'Sit at a lat pulldown machine with your thighs secured under the pads. Grab the bar with a wide overhand grip, hands wider than shoulder-width. Pull the bar down to your upper chest while squeezing your shoulder blades together. Slowly extend your arms back up with control, feeling the stretch in your lats.',
+    'exercise.walkingLunges.name': 'Walking Lunges',
+    'exercise.walkingLunges.howTo': 'Stand tall holding dumbbells at your sides. Step forward with one leg and lower your body until both knees are bent at 90 degrees. Push through your front heel and bring your back leg forward to take the next step. Continue walking forward, alternating legs with each step. Keep your torso upright and core engaged throughout.',
     
     // Calculator page
     'calculator.hero.title': 'BMI Calculator',
@@ -627,6 +631,10 @@ const translations: Record<Language, Record<string, string>> = {
     'exercise.smithMachineRearDeltoidRow.howTo': 'Fique de frente para uma máquina Smith com a barra na altura das coxas. Incline-se para frente nos quadris com uma leve flexão nos joelhos. Segure a barra mais larga que os ombros com pegada pronada. Puxe a barra em direção ao peito contraindo as escápulas e levando os cotovelos para fora. Abaixe a barra com controle.',
     'exercise.seatedOverheadTricepsExtension.name': 'Extensão de Tríceps Acima da Cabeça Sentado',
     'exercise.seatedOverheadTricepsExtension.howTo': 'Sente-se em um banco com apoio para as costas, segurando uma barra acima da cabeça com braços totalmente estendidos. Mantenha os braços superiores parados e próximos à cabeça. Abaixe a barra atrás da cabeça dobrando os cotovelos. Estenda os braços de volta, contraindo o tríceps no topo.',
+    'exercise.wideGripLatPullDown.name': 'Puxada Alta com Pegada Aberta',
+    'exercise.wideGripLatPullDown.howTo': 'Sente-se na máquina de puxada com as coxas presas sob os apoios. Segure a barra com pegada pronada larga, mãos mais afastadas que a largura dos ombros. Puxe a barra até o peito superior enquanto contrai as escápulas. Estenda lentamente os braços de volta com controle, sentindo o alongamento nos dorsais.',
+    'exercise.walkingLunges.name': 'Avanço Caminhando',
+    'exercise.walkingLunges.howTo': 'Fique em pé segurando halteres nas laterais. Dê um passo à frente com uma perna e abaixe o corpo até que ambos os joelhos estejam dobrados a 90 graus. Empurre pelo calcanhar da frente e traga a perna de trás para dar o próximo passo. Continue caminhando para frente, alternando as pernas a cada passo. Mantenha o torso ereto e o core engajado.',
     
     // Calculator page
     'calculator.hero.title': 'Calculadora de IMC',
