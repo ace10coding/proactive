@@ -823,6 +823,110 @@ const Workouts = () => {
       image2: "/images/exercises/walking-lunges-1.png",
       howToKey: "exercise.walkingLunges.howTo",
     },
+    {
+      id: 90,
+      nameKey: "exercise.aerobics.name",
+      type: "Cardio",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/aerobics.jpg",
+      howToKey: "exercise.aerobics.howTo",
+    },
+    {
+      id: 91,
+      nameKey: "exercise.mountainBiking.name",
+      type: "Cardio",
+      equipment: "Machine",
+      image1: "/images/exercises/mountain-biking.jpg",
+      howToKey: "exercise.mountainBiking.howTo",
+    },
+    {
+      id: 92,
+      nameKey: "exercise.pilates.name",
+      type: "Cardio",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/pilates.jpg",
+      howToKey: "exercise.pilates.howTo",
+    },
+    {
+      id: 93,
+      nameKey: "exercise.recumbentBiking.name",
+      type: "Cardio",
+      equipment: "Machine",
+      image1: "/images/exercises/recumbent-biking.jpg",
+      howToKey: "exercise.recumbentBiking.howTo",
+    },
+    {
+      id: 94,
+      nameKey: "exercise.roadCycling.name",
+      type: "Cardio",
+      equipment: "Machine",
+      image1: "/images/exercises/road-cycling.jpg",
+      howToKey: "exercise.roadCycling.howTo",
+    },
+    {
+      id: 95,
+      nameKey: "exercise.rowing.name",
+      type: "Cardio",
+      equipment: "Machine",
+      image1: "/images/exercises/rowing.jpg",
+      howToKey: "exercise.rowing.howTo",
+    },
+    {
+      id: 96,
+      nameKey: "exercise.running.name",
+      type: "Cardio",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/running.jpg",
+      howToKey: "exercise.running.howTo",
+    },
+    {
+      id: 97,
+      nameKey: "exercise.spinning.name",
+      type: "Cardio",
+      equipment: "Machine",
+      image1: "/images/exercises/spinning.jpg",
+      howToKey: "exercise.spinning.howTo",
+    },
+    {
+      id: 98,
+      nameKey: "exercise.stepMachine.name",
+      type: "Cardio",
+      equipment: "Machine",
+      image1: "/images/exercises/step-machine.jpg",
+      howToKey: "exercise.stepMachine.howTo",
+    },
+    {
+      id: 99,
+      nameKey: "exercise.swimming.name",
+      type: "Cardio",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/swimming.jpg",
+      howToKey: "exercise.swimming.howTo",
+    },
+    {
+      id: 100,
+      nameKey: "exercise.treadmillRunning.name",
+      type: "Cardio",
+      equipment: "Machine",
+      image1: "/images/exercises/treadmill-running.jpg",
+      howToKey: "exercise.treadmillRunning.howTo",
+    },
+    {
+      id: 101,
+      nameKey: "exercise.walking.name",
+      type: "Cardio",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/walking.jpg",
+      howToKey: "exercise.walking.howTo",
+    },
+    {
+      id: 102,
+      nameKey: "exercise.yoga.name",
+      type: "Cardio",
+      equipment: "Bodyweight",
+      image1: "/images/exercises/yoga.jpg",
+      howToKey: "exercise.yoga.howTo",
+    },
   ];
 
   const filteredExercises = exercises.filter((exercise) => {
@@ -870,7 +974,6 @@ const Workouts = () => {
                       <SelectItem value="all">{t('workouts.filters.allTypes')}</SelectItem>
                       <SelectItem value="Strength">{t('workouts.types.strength')}</SelectItem>
                       <SelectItem value="Cardio">{t('workouts.types.cardio')}</SelectItem>
-                      <SelectItem value="Stretching">{t('workouts.types.stretching')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
