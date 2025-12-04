@@ -165,7 +165,7 @@ const Index = () => {
             <p className="text-xl sm:text-2xl mb-8 text-white/90 animate-in fade-in-50 slide-in-from-bottom-5 duration-700 delay-150">
               {t('home.hero.subtitle')}
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/workouts">
                 <Button
                   size="lg"

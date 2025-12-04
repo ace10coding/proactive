@@ -67,7 +67,7 @@ const Navigation = () => {
         <div
           className={cn(
             "md:hidden overflow-hidden transition-all duration-300 ease-in-out",
-            isMenuOpen ? "max-h-64 pb-4" : "max-h-0"
+            isMenuOpen ? "max-h-96 pb-4" : "max-h-0"
           )}
         >
           <div className="flex flex-col space-y-1 pt-2">
