@@ -828,7 +828,8 @@ const Workouts = () => {
       nameKey: "exercise.aerobics.name",
       type: "Cardio",
       equipment: "Bodyweight",
-      image1: "/images/exercises/aerobics.jpg",
+      image1: "/images/exercises/aerobics-2.png",
+      image2: "/images/exercises/aerobics-1.png",
       howToKey: "exercise.aerobics.howTo",
     },
     {
@@ -836,7 +837,8 @@ const Workouts = () => {
       nameKey: "exercise.mountainBiking.name",
       type: "Cardio",
       equipment: "Machine",
-      image1: "/images/exercises/mountain-biking.jpg",
+      image1: "/images/exercises/mountain-biking-2.png",
+      image2: "/images/exercises/mountain-biking-1.png",
       howToKey: "exercise.mountainBiking.howTo",
     },
     {
@@ -844,7 +846,8 @@ const Workouts = () => {
       nameKey: "exercise.pilates.name",
       type: "Cardio",
       equipment: "Bodyweight",
-      image1: "/images/exercises/pilates.jpg",
+      image1: "/images/exercises/pilates-2.png",
+      image2: "/images/exercises/pilates-1.png",
       howToKey: "exercise.pilates.howTo",
     },
     {
@@ -852,7 +855,8 @@ const Workouts = () => {
       nameKey: "exercise.recumbentBiking.name",
       type: "Cardio",
       equipment: "Machine",
-      image1: "/images/exercises/recumbent-biking.jpg",
+      image1: "/images/exercises/recumbent-biking-2.png",
+      image2: "/images/exercises/recumbent-biking-1.png",
       howToKey: "exercise.recumbentBiking.howTo",
     },
     {
@@ -860,7 +864,8 @@ const Workouts = () => {
       nameKey: "exercise.roadCycling.name",
       type: "Cardio",
       equipment: "Machine",
-      image1: "/images/exercises/road-cycling.jpg",
+      image1: "/images/exercises/road-cycling-2.png",
+      image2: "/images/exercises/road-cycling-1.png",
       howToKey: "exercise.roadCycling.howTo",
     },
     {
