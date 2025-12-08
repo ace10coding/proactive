@@ -873,7 +873,8 @@ const Workouts = () => {
       nameKey: "exercise.rowing.name",
       type: "Cardio",
       equipment: "Machine",
-      image1: "/images/exercises/rowing.jpg",
+      image1: "/images/exercises/rowing-2.png",
+      image2: "/images/exercises/rowing-1.png",
       howToKey: "exercise.rowing.howTo",
     },
     {
@@ -881,7 +882,8 @@ const Workouts = () => {
       nameKey: "exercise.running.name",
       type: "Cardio",
       equipment: "Bodyweight",
-      image1: "/images/exercises/running.jpg",
+      image1: "/images/exercises/running-2.png",
+      image2: "/images/exercises/running-1.png",
       howToKey: "exercise.running.howTo",
     },
     {
@@ -889,7 +891,8 @@ const Workouts = () => {
       nameKey: "exercise.spinning.name",
       type: "Cardio",
       equipment: "Machine",
-      image1: "/images/exercises/spinning.jpg",
+      image1: "/images/exercises/spinning-2.png",
+      image2: "/images/exercises/spinning-1.png",
       howToKey: "exercise.spinning.howTo",
     },
     {
@@ -897,7 +900,8 @@ const Workouts = () => {
       nameKey: "exercise.stepMachine.name",
       type: "Cardio",
       equipment: "Machine",
-      image1: "/images/exercises/step-machine.jpg",
+      image1: "/images/exercises/step-machine-2.png",
+      image2: "/images/exercises/step-machine-1.png",
       howToKey: "exercise.stepMachine.howTo",
     },
     {
@@ -905,7 +909,8 @@ const Workouts = () => {
       nameKey: "exercise.swimming.name",
       type: "Cardio",
       equipment: "Bodyweight",
-      image1: "/images/exercises/swimming.jpg",
+      image1: "/images/exercises/swimming-2.png",
+      image2: "/images/exercises/swimming-1.png",
       howToKey: "exercise.swimming.howTo",
     },
     {
