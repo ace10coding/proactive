@@ -918,7 +918,8 @@ const Workouts = () => {
       nameKey: "exercise.treadmillRunning.name",
       type: "Cardio",
       equipment: "Machine",
-      image1: "/images/exercises/treadmill-running.jpg",
+      image1: "/images/exercises/treadmill-running-2.png",
+      image2: "/images/exercises/treadmill-running-1.png",
       howToKey: "exercise.treadmillRunning.howTo",
     },
     {
@@ -926,7 +927,8 @@ const Workouts = () => {
       nameKey: "exercise.walking.name",
       type: "Cardio",
       equipment: "Bodyweight",
-      image1: "/images/exercises/walking.jpg",
+      image1: "/images/exercises/walking-2.png",
+      image2: "/images/exercises/walking-1.png",
       howToKey: "exercise.walking.howTo",
     },
     {
@@ -934,7 +936,8 @@ const Workouts = () => {
       nameKey: "exercise.yoga.name",
       type: "Cardio",
       equipment: "Bodyweight",
-      image1: "/images/exercises/yoga.jpg",
+      image1: "/images/exercises/yoga-2.png",
+      image2: "/images/exercises/yoga-1.png",
       howToKey: "exercise.yoga.howTo",
     },
   ];
