@@ -13,7 +13,7 @@ const ExerciseAnimation = ({
   image2, 
   alt, 
   className = "",
-  interval = 1000 
+  interval = 5000 
 }: ExerciseAnimationProps) => {
   const [showFirst, setShowFirst] = useState(false);
 

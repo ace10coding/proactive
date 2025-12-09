@@ -75,6 +75,7 @@ const translations: Record<Language, Record<string, string>> = {
     'events.wrongPassword': 'Incorrect password',
     'events.imageAdded': 'Image added successfully',
     'events.noImages': 'No images in the gallery yet. Add some photos!',
+    'events.notActive': 'Not Active',
     
     // Workouts page
     'workouts.hero.title': 'Workouts',
@@ -449,6 +450,7 @@ const translations: Record<Language, Record<string, string>> = {
     'events.wrongPassword': 'Senha incorreta',
     'events.imageAdded': 'Imagem adicionada com sucesso',
     'events.noImages': 'Nenhuma imagem na galeria ainda. Adicione algumas fotos!',
+    'events.notActive': 'Não Ativo',
     
     // Workouts page
     'workouts.hero.title': 'Exercícios',

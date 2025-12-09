@@ -106,7 +106,7 @@ const Events = () => {
       title: t('events.title'),
       date: t('events.date'),
       location: t('events.location'),
-      category: "Running",
+      category: t('events.notActive'),
       description: t('events.description'),
       registrationLink: "https://forms.gle/example",
     },
@@ -139,7 +139,7 @@ const Events = () => {
               >
                 <CardHeader>
                   <div className="flex items-start justify-between mb-2">
-                    <Badge className="bg-primary/10 text-primary hover:bg-primary/20">
+                    <Badge className="bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400">
                       {event.category}
                     </Badge>
                   </div>
